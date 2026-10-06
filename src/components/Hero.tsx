@@ -131,30 +131,32 @@ export const Hero: React.FC<HeroProps> = ({ onOpenJoinModal }) => {
           className="absolute left-1/2 top-1/2 z-20 w-full h-full overflow-hidden bg-black will-change-transform"
           style={{ transform: 'translate(-50%, -50%)' }}
         >
-          {!videoFailed ? (
-            <video
-              className="w-full h-full object-cover"
-              src={VIDEO_SRC}
-              autoPlay
-              muted
-              loop
-              playsInline
-              preload="auto"
-              onCanPlay={() => setVideoReady(true)}
-              onError={() => setVideoFailed(true)}
-              style={{ opacity: videoReady ? 1 : 0, transition: 'opacity 0.6s' }}
-            />
-          ) : (
-            <div className="w-full h-full relative bg-black">
-              <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(255,255,255,0.14),transparent_60%)] animate-pulse" />
-              <div className="absolute inset-0 bg-grid-pattern opacity-40" style={{ transform: 'perspective(600px) rotateX(35deg) scale(1.6)' }} />
-              <div className="absolute inset-0 flex items-center justify-center">
-                <span className="font-mono text-[10px] uppercase tracking-[0.4em] text-white/40">
-                  Place intro.mp4 in /public
-                </span>
+          <div className="absolute left-1/2 top-1/2 w-full aspect-video -translate-x-1/2 -translate-y-1/2 overflow-hidden bg-black">
+            {!videoFailed ? (
+              <video
+                className="w-full h-full object-cover"
+                src={VIDEO_SRC}
+                autoPlay
+                muted
+                loop
+                playsInline
+                preload="auto"
+                onCanPlay={() => setVideoReady(true)}
+                onError={() => setVideoFailed(true)}
+                style={{ opacity: videoReady ? 1 : 0, transition: 'opacity 0.6s' }}
+              />
+            ) : (
+              <div className="w-full h-full relative bg-black">
+                <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(255,255,255,0.14),transparent_60%)] animate-pulse" />
+                <div className="absolute inset-0 bg-grid-pattern opacity-40" style={{ transform: 'perspective(600px) rotateX(35deg) scale(1.6)' }} />
+                <div className="absolute inset-0 flex items-center justify-center">
+                  <span className="font-mono text-[10px] uppercase tracking-[0.4em] text-white/40">
+                    Place intro.mp4 in /public
+                  </span>
+                </div>
               </div>
-            </div>
-          )}
+            )}
+          </div>
         </div>
 
         {/* Intro title overlay — fades out as the video shrinks */}
