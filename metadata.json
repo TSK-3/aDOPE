@@ -1,0 +1,6 @@
+{
+  "name": "Adope Club",
+  "description": "A DOPE CLUB OF MGIT - A collective of visual explorers defining the aesthetic of the next generation.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

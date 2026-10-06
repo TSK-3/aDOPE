@@ -1,0 +1,94 @@
+import React from 'react';
+import { CLUB_STATS } from '../data/mockData';
+import { Sparkles, Terminal, Cpu, Layers } from 'lucide-react';
+
+export const AboutSection: React.FC = () => {
+  const pillars = [
+    {
+      icon: <Layers className="w-5 h-5 text-white/80" />,
+      title: 'Visual Identity',
+      desc: 'Logos, brand systems, and visual direction for clubs, events, and campus initiatives.'
+    },
+    {
+      icon: <Cpu className="w-5 h-5 text-white/80" />,
+      title: 'Digital Art',
+      desc: "Screen-based design and digital experiments that extend aDOPE's graphic language."
+    },
+    {
+      icon: <Terminal className="w-5 h-5 text-white/80" />,
+      title: 'Editorial Craft',
+      desc: 'Magazine layouts, posters, typography, and print compositions built to communicate clearly.'
+    },
+    {
+      icon: <Sparkles className="w-5 h-5 text-white/80" />,
+      title: 'Campus Culture',
+      desc: 'A student-led team shaping how MGIT events and ideas are seen, remembered, and shared.'
+    }
+  ];
+
+  return (
+    <section id="about" className="py-24 sm:py-32 bg-[#131313] border-b border-white/10 relative z-20">
+      <div className="max-w-[1440px] mx-auto px-6 md:px-16 relative">
+        {/* Top Grid: Title + Description Box */}
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-start">
+          <div className="lg:col-span-5">
+            <span className="font-mono text-xs uppercase tracking-widest text-neutral-400 block mb-4">
+              01 // Mission & Ethos
+            </span>
+            <h2 className="text-3xl sm:text-5xl lg:text-6xl font-extrabold uppercase tracking-tight text-white leading-[1.05]">
+              Artists,<br />
+              Designers, &amp;<br />
+              <span className="text-neutral-500">Original People of Earth.</span>
+            </h2>
+          </div>
+
+          <div className="lg:col-span-7">
+            <div className="bg-[#1A1A1A] border border-white/10 p-8 sm:p-12 relative group hover:bg-[#222222] transition-colors duration-500">
+              <div className="absolute top-0 left-0 w-2.5 h-2.5 border-t border-l border-white/40 group-hover:border-white transition-colors" />
+              <div className="absolute bottom-0 right-0 w-2.5 h-2.5 border-b border-r border-white/40 group-hover:border-white transition-colors" />
+
+              <p className="font-sans text-lg sm:text-xl text-neutral-300 mb-6 leading-relaxed">
+                aDOPE is the design club of Mahatma Gandhi Institute of Technology in Hyderabad. It brings student creatives together to make identities, posters, editorial work, digital art, interfaces, and merchandise for campus culture.
+              </p>
+              <p className="font-sans text-sm sm:text-base text-neutral-400 leading-relaxed">
+                The club describes itself as a design team and digital art club. Its public archive shows a practice grounded in visual communication, collaborative briefs, and making memorable work for MGIT.
+              </p>
+            </div>
+          </div>
+        </div>
+
+        {/* Pillars Grid */}
+        <div className="mt-20 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+          {pillars.map((pillar, idx) => (
+            <div
+              key={idx}
+              className="bg-[#1A1A1A]/60 border border-white/10 p-6 relative group hover:border-white/30 transition-all hover:-translate-y-1"
+            >
+              <div className="mb-4">{pillar.icon}</div>
+              <h3 className="font-mono text-sm uppercase tracking-wider text-white mb-2 font-semibold">
+                {pillar.title}
+              </h3>
+              <p className="text-xs text-neutral-400 leading-relaxed">
+                {pillar.desc}
+              </p>
+            </div>
+          ))}
+        </div>
+
+        {/* Live Club Stats Bar */}
+        <div className="mt-16 pt-12 border-t border-white/10 grid grid-cols-2 sm:grid-cols-4 gap-8 text-center sm:text-left">
+          {CLUB_STATS.map((stat, idx) => (
+            <div key={idx} className="flex flex-col">
+              <span className="font-mono text-xs uppercase tracking-widest text-neutral-500 mb-1">
+                {stat.label}
+              </span>
+              <span className="font-extrabold text-3xl sm:text-4xl text-white font-mono">
+                {stat.value}
+              </span>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+};

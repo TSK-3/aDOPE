@@ -1,0 +1,136 @@
+import React from 'react';
+import { Artwork } from '../types';
+import { X, Sparkles, Tag, Calendar, User, ShieldCheck, Download, Share2 } from 'lucide-react';
+
+interface ArtworkModalProps {
+  artwork: Artwork | null;
+  onClose: () => void;
+}
+
+export const ArtworkModal: React.FC<ArtworkModalProps> = ({ artwork, onClose }) => {
+  if (!artwork) return null;
+
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 bg-black/90 backdrop-blur-xl animate-fade-in-up overflow-y-auto">
+      <div className="bg-[#131313] border border-white/20 max-w-4xl w-full relative my-8 overflow-hidden shadow-2xl">
+        {/* Corner Accents */}
+        <div className="absolute top-0 left-0 w-3 h-3 border-t-2 border-l-2 border-white z-20" />
+        <div className="absolute top-0 right-0 w-3 h-3 border-t-2 border-r-2 border-white z-20" />
+        <div className="absolute bottom-0 left-0 w-3 h-3 border-b-2 border-l-2 border-white z-20" />
+        <div className="absolute bottom-0 right-0 w-3 h-3 border-b-2 border-r-2 border-white z-20" />
+
+        {/* Header Bar */}
+        <div className="flex items-center justify-between p-6 border-b border-white/10 bg-[#0E0E0E]">
+          <div className="flex items-center gap-3">
+            <span className="font-mono text-xs uppercase tracking-widest text-neutral-400 bg-white/5 px-2.5 py-1 border border-white/10">
+              {artwork.category}
+            </span>
+            <span className="font-mono text-xs text-neutral-500 hidden sm:inline-block">
+              ID: {artwork.id.toUpperCase()}
+            </span>
+          </div>
+
+          <button
+            onClick={onClose}
+            className="font-mono text-xs uppercase tracking-widest text-neutral-300 hover:text-white border border-white/20 hover:border-white px-3.5 py-1.5 transition-colors flex items-center gap-1.5"
+          >
+            <X className="w-4 h-4" /> Close
+          </button>
+        </div>
+
+        {/* Content Layout */}
+        <div className="p-6 sm:p-8 grid grid-cols-1 lg:grid-cols-12 gap-8">
+          {/* Main Image View */}
+          <div className="lg:col-span-7 bg-[#0A0A0A] border border-white/10 overflow-hidden relative flex items-center justify-center">
+            <img
+              src={artwork.imageUrl}
+              alt={artwork.title}
+              className="w-full h-auto max-h-[500px] object-contain"
+            />
+          </div>
+
+          {/* Details Sidebar */}
+          <div className="lg:col-span-5 flex flex-col justify-between">
+            <div>
+              <h2 className="text-2xl sm:text-3xl font-extrabold text-white tracking-tight mb-2">
+                {artwork.title}
+              </h2>
+
+              <div className="flex flex-wrap items-center gap-4 text-xs text-neutral-400 mb-6 font-mono pb-4 border-b border-white/10">
+                <span className="flex items-center gap-1">
+                  <User className="w-3.5 h-3.5 text-neutral-500" />
+                  {artwork.artistName}
+                </span>
+                <span className="flex items-center gap-1">
+                  <Calendar className="w-3.5 h-3.5 text-neutral-500" />
+                  {artwork.year}
+                </span>
+              </div>
+
+              <p className="text-sm text-neutral-300 leading-relaxed font-sans mb-6">
+                {artwork.description}
+              </p>
+
+              {/* Technical Specifications */}
+              {artwork.specs && artwork.specs.length > 0 && (
+                <div className="mb-6">
+                  <h4 className="font-mono text-xs uppercase tracking-widest text-neutral-400 mb-2 font-semibold">
+                    Technical Specifications
+                  </h4>
+                  <ul className="space-y-1.5">
+                    {artwork.specs.map((spec, idx) => (
+                      <li key={idx} className="font-mono text-xs text-neutral-300 flex items-center gap-2">
+                        <span className="w-1.5 h-1.5 bg-white shrink-0" />
+                        {spec}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              )}
+
+              {/* Tags */}
+              <div className="mb-6">
+                <h4 className="font-mono text-xs uppercase tracking-widest text-neutral-400 mb-2 font-semibold">
+                  Metadata Tags
+                </h4>
+                <div className="flex flex-wrap gap-1.5">
+                  {artwork.tags.map((tag, idx) => (
+                    <span
+                      key={idx}
+                      className="font-mono text-[10px] uppercase bg-white/5 text-neutral-300 px-2.5 py-1 border border-white/10 flex items-center gap-1"
+                    >
+                      <Tag className="w-2.5 h-2.5 text-neutral-500" />
+                      {tag}
+                    </span>
+                  ))}
+                </div>
+              </div>
+            </div>
+
+            {/* Actions */}
+            <div className="pt-6 border-t border-white/10 flex items-center gap-3">
+              <a
+                href={artwork.imageUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex-1 bg-white text-[#131313] font-mono text-xs py-3 uppercase tracking-widest font-semibold hover:bg-neutral-200 text-center flex justify-center items-center gap-2 transition-colors"
+              >
+                <Download className="w-4 h-4" /> High-Res Asset
+              </a>
+              <button
+                onClick={() => {
+                  navigator.clipboard?.writeText(window.location.href);
+                  alert('Asset reference link copied to clipboard.');
+                }}
+                className="p-3 border border-white/20 text-white hover:border-white transition-colors"
+                title="Share Link"
+              >
+                <Share2 className="w-4 h-4" />
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};

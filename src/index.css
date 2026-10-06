@@ -1,0 +1,76 @@
+@import "tailwindcss";
+
+@layer base {
+  body {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    background-color: #131313;
+    color: #e5e2e1;
+    overflow-x: hidden;
+  }
+
+  code, pre, .font-mono {
+    font-family: 'JetBrains Mono', monospace;
+  }
+}
+
+/* Designer Grid Pattern */
+.bg-grid-pattern {
+  background-image: 
+    linear-gradient(to right, rgba(255, 255, 255, 0.05) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(255, 255, 255, 0.05) 1px, transparent 1px);
+  background-size: 50px 50px;
+}
+
+/* Custom Glitch Animation */
+.hover-glitch:hover {
+  animation: glitch 0.3s cubic-bezier(.25, .46, .45, .94) both infinite;
+  color: #ffffff;
+}
+
+@keyframes glitch {
+  0% { transform: translate(0); }
+  20% { transform: translate(-2px, 2px); }
+  40% { transform: translate(-2px, -2px); }
+  60% { transform: translate(2px, 2px); }
+  80% { transform: translate(2px, -2px); }
+  100% { transform: translate(0); }
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+}
+::-webkit-scrollbar-track {
+  background: #0e0e0e;
+}
+::-webkit-scrollbar-thumb {
+  background: #333333;
+  border-radius: 0px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #666666;
+}
+
+/* Magnetic Button Glow Effect */
+.magnetic-btn {
+  position: relative;
+  overflow: hidden;
+}
+.magnetic-btn::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 0;
+  height: 0;
+  background: rgba(255, 255, 255, 0.15);
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+  transition: width 0.4s ease-out, height 0.4s ease-out;
+  pointer-events: none;
+}
+.magnetic-btn:hover::before {
+  width: 300%;
+  padding-top: 300%;
+}
+
