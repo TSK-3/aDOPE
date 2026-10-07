@@ -16,6 +16,8 @@ const getActiveIndex = (progress: number) => (progress < 0.4 ? 0 : progress < 0.
 
 export const TimelineSection: React.FC = () => {
   const sectionRef = useRef<HTMLElement>(null);
+  const trackPathRef = useRef<SVGPathElement>(null);
+  const laserHeadRef = useRef<SVGGElement>(null);
   const [activeIndex, setActiveIndex] = useState(0);
   const [activeLog, setActiveLog] = useState<TimelineLog | null>(null);
   const reduceMotion = useReducedMotion();
@@ -23,6 +25,12 @@ export const TimelineSection: React.FC = () => {
 
   useMotionValueEvent(scrollYProgress, 'change', (progress) => {
     setActiveIndex(getActiveIndex(progress));
+    const path = trackPathRef.current;
+    const head = laserHeadRef.current;
+    if (path && head) {
+      const point = path.getPointAtLength(path.getTotalLength() * progress);
+      head.setAttribute('transform', `translate(${point.x} ${point.y})`);
+    }
   });
 
   const activeItem = TIMELINE_DATA[activeIndex];
@@ -49,44 +57,50 @@ export const TimelineSection: React.FC = () => {
               </div>
               <svg viewBox="45 8 840 590" preserveAspectRatio="xMidYMid meet" className="mx-auto block max-h-[35vh] w-full max-w-[520px] sm:max-h-[48vh] lg:max-h-[62vh]" role="img" aria-label="aDOPE archive circuit; the route draws as the timeline advances">
                 <defs>
-                  <pattern id="timeline-finish-line" width="8" height="8" patternUnits="userSpaceOnUse">
-                    <rect width="4" height="4" fill="#d4d4d4" />
-                    <rect x="4" width="4" height="4" fill="#242424" />
-                    <rect y="4" width="4" height="4" fill="#242424" />
-                    <rect x="4" y="4" width="4" height="4" fill="#d4d4d4" />
-                  </pattern>
+                  <filter id="timeline-laser-glow" x="-80%" y="-80%" width="260%" height="260%">
+                    <feGaussianBlur stdDeviation="4" result="blur" />
+                    <feMerge><feMergeNode in="blur" /><feMergeNode in="SourceGraphic" /></feMerge>
+                  </filter>
+                  <filter id="timeline-head-glow" x="-200%" y="-200%" width="500%" height="500%">
+                    <feGaussianBlur stdDeviation="7" />
+                  </filter>
+                  <radialGradient id="timeline-head-halo">
+                    <stop offset="0%" stopColor="#b8fbff" stopOpacity="0.9" />
+                    <stop offset="35%" stopColor="#59e7ff" stopOpacity="0.38" />
+                    <stop offset="100%" stopColor="#59e7ff" stopOpacity="0" />
+                  </radialGradient>
                 </defs>
-                <path d={CIRCUIT_PATH} fill="none" stroke="#777" strokeWidth="42" strokeLinecap="round" strokeLinejoin="round" />
-                <path d={CIRCUIT_PATH} fill="none" stroke="#151515" strokeWidth="34" strokeLinecap="round" strokeLinejoin="round" />
-                <path d={CIRCUIT_PATH} fill="none" stroke="#a3a3a3" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-                <g fill="none" stroke="#858585" strokeWidth="7" strokeLinecap="square">
-                  <path d="M 91 87 L 116 61 M 101 95 L 126 69 M 111 103 L 136 77" />
-                  <path d="M 752 268 L 777 254 M 761 284 L 786 270 M 770 300 L 795 286" />
-                  <path d="M 720 578 L 742 591 M 732 566 L 754 579 M 744 554 L 766 567" />
-                </g>
-                <g fill="#a3a3a3" fontSize="11" fontFamily="monospace" fontWeight="600" letterSpacing="1.5">
-                  <text x="810" y="493">START / FINISH</text>
-                  <text x="580" y="221">T1</text>
-                  <text x="486" y="401">T2</text>
-                  <text x="303" y="393">T3</text>
-                </g>
-                <rect x="774" y="470" width="12" height="40" fill="url(#timeline-finish-line)" />
+                <path d={CIRCUIT_PATH} fill="none" stroke="#24282d" strokeWidth="12" strokeLinecap="round" strokeLinejoin="round" />
+                <path d={CIRCUIT_PATH} fill="none" stroke="#454b52" strokeWidth="1.25" strokeLinecap="round" strokeLinejoin="round" />
                 <motion.path
+                  ref={trackPathRef}
                   d={CIRCUIT_PATH}
                   fill="none"
-                  stroke="#d4d4d4"
-                  strokeWidth="2"
+                  stroke="#37dfff"
+                  strokeWidth="8"
                   strokeLinecap="round"
                   strokeLinejoin="round"
-                  style={{ pathLength: reduceMotion ? 1 : scrollYProgress }}
+                  opacity="0.42"
+                  filter="url(#timeline-laser-glow)"
+                  style={{ pathLength: scrollYProgress }}
                 />
+                <motion.path d={CIRCUIT_PATH} fill="none" stroke="#8bf1ff" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" style={{ pathLength: scrollYProgress }} />
+                <motion.path d={CIRCUIT_PATH} fill="none" stroke="#f1feff" strokeWidth="0.8" strokeLinecap="round" strokeLinejoin="round" style={{ pathLength: scrollYProgress }} />
+
+                <g ref={laserHeadRef} transform={`translate(${STATIONS[0].x} ${STATIONS[0].y})`} pointerEvents="none">
+                  <circle r="22" fill="url(#timeline-head-halo)" />
+                  <circle r="11" fill="#62eaff" opacity="0.24" filter="url(#timeline-head-glow)" />
+                  <circle r="4.5" fill="#76edff" />
+                  <circle r="2" fill="#ffffff" />
+                </g>
 
                 {STATIONS.map((station, index) => {
                   const isActive = index === activeIndex;
                   return (
                     <g key={station.label} aria-label={`${station.label}: ${TIMELINE_DATA[index].title}`}>
-                      <circle cx={station.x} cy={station.y} r={isActive ? 13 : 11} fill={isActive ? '#e5e5e5' : '#101010'} stroke="#d4d4d4" strokeWidth="1.5" />
-                      <text x={station.x} y={station.y + 3} fill={isActive ? '#101010' : '#e5e5e5'} textAnchor="middle" fontSize="8" fontWeight="600" fontFamily="monospace">0{index + 1}</text>
+                      {isActive && <circle cx={station.x} cy={station.y} r="19" fill="#65eaff" opacity="0.12" />}
+                      <circle cx={station.x} cy={station.y} r={isActive ? 12 : 10} fill="#101010" stroke={isActive ? '#8bf1ff' : '#59616a'} strokeWidth={isActive ? 1.8 : 1.2} />
+                      <text x={station.x} y={station.y + 3} fill={isActive ? '#dffcff' : '#a3a3a3'} textAnchor="middle" fontSize="8" fontWeight="600" fontFamily="monospace">0{index + 1}</text>
                     </g>
                   );
                 })}
