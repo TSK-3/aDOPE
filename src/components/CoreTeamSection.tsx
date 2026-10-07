@@ -1,8 +1,10 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { CORE_TEAM_DATA } from '../data/mockData';
 import { CoreTeamMember } from '../types';
 
 export const CoreTeamSection: React.FC = () => {
+  const [touchedMemberImage, setTouchedMemberImage] = useState<string | null>(null);
+
   return (
     <section id="team" className="py-24 sm:py-32 bg-[#131313] border-b border-white/10 relative z-20">
       <div className="max-w-[1440px] mx-auto px-6 md:px-16 relative">
@@ -27,12 +29,17 @@ export const CoreTeamSection: React.FC = () => {
               className="bg-[#1A1A1A] border border-white/10 p-5 relative group hover:border-white/40 transition-all duration-300"
             >
               <div className="absolute top-0 right-0 w-2 h-2 border-t border-r border-white/40 group-hover:border-white" />
-              <div className="aspect-[4/5] bg-[#0E0E0E] border border-white/10 mb-5 overflow-hidden flex items-center justify-center">
+              <div
+                className="aspect-[4/5] bg-[#0E0E0E] border border-white/10 mb-5 overflow-hidden flex items-center justify-center"
+                onPointerDown={(event) => {
+                  if (event.pointerType === 'touch') setTouchedMemberImage(member.id);
+                }}
+              >
                 {member.imageUrl ? (
                   <img
                     src={member.imageUrl}
                     alt={member.name}
-                    className="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-500"
+                    className={`w-full h-full object-cover transition-all duration-500 ${touchedMemberImage === member.id ? 'grayscale-0' : 'grayscale'} md:grayscale md:group-hover:grayscale-0`}
                   />
                 ) : (
                   <span className="font-mono text-[10px] uppercase tracking-widest text-neutral-600">

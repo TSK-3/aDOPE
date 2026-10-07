@@ -5,6 +5,7 @@ import { ExternalLink, Instagram, Linkedin, Github } from 'lucide-react';
 
 export const ArtistsSection: React.FC = () => {
   const [selectedSpecialty, setSelectedSpecialty] = useState<string>('All');
+  const [touchedArtistImage, setTouchedArtistImage] = useState<string | null>(null);
 
   const specialties = ['All', 'Branding', 'Editorial', 'UI/UX', 'Events'];
 
@@ -55,11 +56,16 @@ export const ArtistsSection: React.FC = () => {
               <div className="absolute top-0 right-0 w-2 h-2 border-t border-r border-white/40" />
 
               <div>
-                <div className="relative overflow-hidden mb-6 aspect-square bg-[#131313] border border-white/5">
+                <div
+                  className="relative overflow-hidden mb-6 aspect-square bg-[#131313] border border-white/5"
+                  onPointerDown={(event) => {
+                    if (event.pointerType === 'touch') setTouchedArtistImage(artist.id);
+                  }}
+                >
                   <img
                     src={artist.avatarUrl}
                     alt={artist.name}
-                    className="w-full h-full object-cover grayscale mix-blend-luminosity group-hover:grayscale-0 group-hover:mix-blend-normal transition-all duration-500 scale-100 group-hover:scale-105"
+                    className={`w-full h-full object-cover transition-all duration-500 scale-100 md:group-hover:scale-105 ${touchedArtistImage === artist.id ? 'grayscale-0 mix-blend-normal' : 'grayscale mix-blend-luminosity'} md:grayscale md:mix-blend-luminosity md:group-hover:grayscale-0 md:group-hover:mix-blend-normal`}
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-[#1A1A1A] via-transparent to-transparent opacity-80" />
                 </div>

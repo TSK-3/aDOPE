@@ -169,6 +169,8 @@ export const VisualOutputSection: React.FC<VisualOutputSectionProps> = ({
   onOpenJoinModal
 }) => {
   const [selectedCategory, setSelectedCategory] = useState<string>('All');
+  const [touchedArtworkId, setTouchedArtworkId] = useState<string | null>(null);
+  const touchRevealOnlyRef = useRef(false);
 
   const categories = ['All', 'Branding', 'Editorial', 'Posters', 'UI/UX', 'Logo Design', 'Event Identity'];
 
@@ -232,7 +234,21 @@ export const VisualOutputSection: React.FC<VisualOutputSectionProps> = ({
             return (
               <div
                 key={art.id}
-                onClick={() => onSelectArtwork(art)}
+                onPointerDown={(event) => {
+                  if (event.pointerType !== 'touch') {
+                    touchRevealOnlyRef.current = false;
+                    return;
+                  }
+                  touchRevealOnlyRef.current = touchedArtworkId !== art.id;
+                  if (touchRevealOnlyRef.current) setTouchedArtworkId(art.id);
+                }}
+                onClick={() => {
+                  if (touchRevealOnlyRef.current) {
+                    touchRevealOnlyRef.current = false;
+                    return;
+                  }
+                  onSelectArtwork(art);
+                }}
                 className={`${colSpan} group cursor-pointer relative overflow-hidden border border-white/10 bg-[#1A1A1A] transition-all hover:border-white/40`}
               >
                 <div className={`${aspect} relative overflow-hidden w-full`}>
@@ -247,7 +263,7 @@ export const VisualOutputSection: React.FC<VisualOutputSectionProps> = ({
                     </>
                   ) : (
                     <div
-                      className="absolute inset-0 bg-cover bg-center transition-transform duration-700 md:group-hover:scale-105 opacity-100 md:opacity-60 md:mix-blend-luminosity md:group-hover:opacity-100 md:group-hover:mix-blend-normal"
+                      className={`absolute inset-0 bg-cover bg-center transition-all duration-700 md:group-hover:scale-105 ${touchedArtworkId === art.id ? 'opacity-100 mix-blend-normal' : 'opacity-60 mix-blend-luminosity'} md:opacity-60 md:mix-blend-luminosity md:group-hover:opacity-100 md:group-hover:mix-blend-normal`}
                       style={{ backgroundImage: `url('${art.imageUrl}')` }}
                     />
                   )}
