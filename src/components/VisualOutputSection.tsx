@@ -1,7 +1,163 @@
-import React, { useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { ARTWORKS_DATA } from '../data/mockData';
 import { Artwork } from '../types';
 import { Plus, Eye } from 'lucide-react';
+import * as THREE from 'three';
+
+const NirvanaPhoenix: React.FC = () => {
+  const mountRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const mount = mountRef.current;
+    if (!mount) return;
+
+    let renderer: THREE.WebGLRenderer;
+    try {
+      renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
+    } catch {
+      return;
+    }
+
+    const scene = new THREE.Scene();
+    const camera = new THREE.PerspectiveCamera(34, mount.clientWidth / mount.clientHeight, 0.1, 100);
+    camera.position.z = 8.2;
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+    renderer.setSize(mount.clientWidth, mount.clientHeight);
+    renderer.setClearColor(0x000000, 0);
+    mount.appendChild(renderer.domElement);
+
+    const emblem = new THREE.Group();
+    scene.add(emblem);
+    const texture = new THREE.TextureLoader().load('/nirvana-phoenix.png', (loaded) => {
+      loaded.colorSpace = THREE.SRGBColorSpace;
+      const image = loaded.image as HTMLImageElement;
+      const aspect = image.width / image.height;
+      const height = 4.15;
+      const width = height * aspect;
+
+      // Repeated, slightly darkened relief layers give the cutout a visible edge
+      // when the emblem tilts, while keeping the supplied phoenix artwork intact.
+      for (let layer = 0; layer < 20; layer += 1) {
+        const relief = new THREE.Mesh(
+          new THREE.PlaneGeometry(width, height),
+          new THREE.MeshBasicMaterial({
+            map: loaded,
+            color: 0x9a5415,
+            transparent: true,
+            alphaTest: 0.04,
+            depthWrite: true,
+            side: THREE.DoubleSide
+          })
+        );
+        relief.position.z = -0.58 + layer * 0.03;
+        emblem.add(relief);
+      }
+
+      const face = new THREE.Mesh(
+        new THREE.PlaneGeometry(width, height),
+        new THREE.MeshBasicMaterial({ map: loaded, transparent: true, alphaTest: 0.04, depthWrite: false, side: THREE.DoubleSide })
+      );
+      face.position.z = 0.04;
+      emblem.add(face);
+      emblem.position.y = 0.25;
+      renderer.render(scene, camera);
+    });
+
+    let dragging = false;
+    let moved = false;
+    let suppressClick = false;
+    let lastX = 0;
+    let lastY = 0;
+    let velocityX = 0;
+    let velocityY = 0;
+    let frameId = 0;
+    const onPointerDown = (event: PointerEvent) => {
+      dragging = true;
+      moved = false;
+      lastX = event.clientX;
+      lastY = event.clientY;
+      velocityX = 0;
+      velocityY = 0;
+      mount.setPointerCapture(event.pointerId);
+      event.preventDefault();
+    };
+    const onPointerMove = (event: PointerEvent) => {
+      if (!dragging) return;
+      const deltaX = event.clientX - lastX;
+      const deltaY = event.clientY - lastY;
+      if (Math.abs(deltaX) + Math.abs(deltaY) > 1) moved = true;
+      velocityY = deltaX * 0.008;
+      velocityX = deltaY * 0.008;
+      emblem.rotation.y += velocityY;
+      emblem.rotation.x += velocityX;
+      lastX = event.clientX;
+      lastY = event.clientY;
+    };
+    const onPointerUp = (event: PointerEvent) => {
+      if (!dragging) return;
+      dragging = false;
+      if (mount.hasPointerCapture(event.pointerId)) mount.releasePointerCapture(event.pointerId);
+      if (moved) {
+        suppressClick = true;
+        window.setTimeout(() => { suppressClick = false; }, 100);
+      }
+    };
+    const onClick = (event: MouseEvent) => {
+      if (!suppressClick) return;
+      event.preventDefault();
+      event.stopPropagation();
+    };
+    mount.addEventListener('pointerdown', onPointerDown);
+    mount.addEventListener('pointermove', onPointerMove);
+    mount.addEventListener('pointerup', onPointerUp);
+    mount.addEventListener('pointercancel', onPointerUp);
+    mount.addEventListener('click', onClick);
+
+    const resizeObserver = new ResizeObserver(() => {
+      const width = mount.clientWidth;
+      const height = mount.clientHeight;
+      if (!width || !height) return;
+      camera.aspect = width / height;
+      camera.updateProjectionMatrix();
+      renderer.setSize(width, height);
+    });
+    resizeObserver.observe(mount);
+
+    const animate = () => {
+      frameId = window.requestAnimationFrame(animate);
+      if (!dragging) {
+        emblem.rotation.x += velocityX;
+        emblem.rotation.y += velocityY;
+        velocityX *= 0.94;
+        velocityY *= 0.94;
+      }
+      renderer.render(scene, camera);
+    };
+    animate();
+
+    return () => {
+      window.cancelAnimationFrame(frameId);
+      resizeObserver.disconnect();
+      mount.removeEventListener('pointerdown', onPointerDown);
+      mount.removeEventListener('pointermove', onPointerMove);
+      mount.removeEventListener('pointerup', onPointerUp);
+      mount.removeEventListener('pointercancel', onPointerUp);
+      mount.removeEventListener('click', onClick);
+      texture.dispose();
+      emblem.traverse((object) => {
+        if (object instanceof THREE.Mesh) {
+          object.geometry.dispose();
+          if (Array.isArray(object.material)) object.material.forEach((material) => material.dispose());
+          else object.material.dispose();
+        }
+      });
+      renderer.dispose();
+      renderer.domElement.remove();
+    };
+  }, []);
+
+  return <div ref={mountRef} className="absolute inset-0 z-10 cursor-grab touch-none active:cursor-grabbing" aria-label="Drag to rotate the three-dimensional phoenix emblem for NIRVANA 2026" />;
+};
 
 interface VisualOutputSectionProps {
   onSelectArtwork: (artwork: Artwork) => void;
@@ -14,7 +170,7 @@ export const VisualOutputSection: React.FC<VisualOutputSectionProps> = ({
 }) => {
   const [selectedCategory, setSelectedCategory] = useState<string>('All');
 
-  const categories = ['All', 'Branding', 'Editorial', 'Posters', 'UI/UX', 'Logo Design'];
+  const categories = ['All', 'Branding', 'Editorial', 'Posters', 'UI/UX', 'Logo Design', 'Event Identity'];
 
   const filteredArtworks = selectedCategory === 'All'
     ? ARTWORKS_DATA
@@ -83,8 +239,12 @@ export const VisualOutputSection: React.FC<VisualOutputSectionProps> = ({
                   <div className="absolute top-0 left-0 w-2 h-2 border-t border-l border-white/50 z-10" />
                   <div className="absolute top-0 right-0 w-2 h-2 border-t border-r border-white/50 z-10" />
 
-                  {art.id === 'art-logo' ? (
-                    <img src={art.imageUrl} alt="" aria-hidden="true" className="absolute inset-0 m-auto h-[62%] w-[62%] object-contain invert opacity-80 transition-transform duration-700 group-hover:scale-105 group-hover:opacity-100" />
+                  {art.id === 'art-nirvana-2026' ? (
+                    <>
+                      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(176,94,20,0.18),transparent_58%)]" />
+                      <NirvanaPhoenix />
+                      <div className="absolute top-4 left-1/2 -translate-x-1/2 z-20 pointer-events-none font-mono text-[9px] uppercase tracking-[0.28em] text-amber-100/55">Drag to rotate</div>
+                    </>
                   ) : (
                     <div
                       className="absolute inset-0 bg-cover bg-center transition-transform duration-700 group-hover:scale-105 opacity-60 mix-blend-luminosity group-hover:opacity-100 group-hover:mix-blend-normal"
@@ -92,7 +252,7 @@ export const VisualOutputSection: React.FC<VisualOutputSectionProps> = ({
                     />
                   )}
 
-                  <div className="absolute inset-0 bg-gradient-to-t from-[#131313] via-transparent to-transparent opacity-85 group-hover:opacity-60 transition-opacity" />
+                  <div className="absolute inset-0 pointer-events-none bg-gradient-to-t from-[#131313] via-transparent to-transparent opacity-85 group-hover:opacity-60 transition-opacity" />
 
                   {/* Top Badge */}
                   <div className="absolute top-4 left-4 z-10">

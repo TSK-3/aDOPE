@@ -15,15 +15,15 @@ export const SOCIAL_LINKS = {
 
 export const ARTWORKS_DATA: Artwork[] = [
   {
-    id: 'art-logo',
-    title: 'aDOPE Logo',
-    category: 'Logo Design',
-    imageUrl: LOGO_URL,
-    description: 'The club mark anchoring aDOPE’s visual identity.',
-    year: 'Identity',
-    artistName: 'aDOPE Club',
-    specs: ['Logo Design', 'Visual Identity', 'MGIT'],
-    tags: ['Logo Design', 'Branding', 'MGIT'],
+    id: 'art-nirvana-2026',
+    title: 'NIRVANA 2026',
+    category: 'Event Identity',
+    imageUrl: '/nirvana-phoenix.png',
+    description: 'A dimensional phoenix emblem created for NIRVANA 2026, MGIT’s annual fest.',
+    year: '2026',
+    artistName: 'NIRVANA',
+    specs: ['Event Identity', 'Phoenix Emblem', '3D Artwork'],
+    tags: ['NIRVANA', '2026', 'MGIT'],
     featured: true
   },
   {
@@ -178,11 +178,11 @@ export const CORE_TEAM_DATA: CoreTeamMember[] = [
     name: 'Sohail Ali',
     role: 'Co-Head',
     imageUrl: '/sohail.jpeg',
-    bio: 'The co-head role will be updated when the official team announcement is published.'
+    bio: 'Supporting aDOPE\'s creative direction and coordinating the club\'s design initiatives.'
   },
   {
     id: 'core-secretary',
-    name: 'To be announced',
+    name: 'T Siddhartha Karthik',
     role: 'Secretary',
     bio: 'The secretary role will be updated when the official team announcement is published.'
   },

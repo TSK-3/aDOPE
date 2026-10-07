@@ -1,7 +1,7 @@
 export interface Artwork {
   id: string;
   title: string;
-  category: 'Branding' | 'Editorial' | 'Posters' | 'UI/UX' | 'Merchandise' | 'Logo Design';
+  category: 'Branding' | 'Editorial' | 'Posters' | 'UI/UX' | 'Merchandise' | 'Logo Design' | 'Event Identity';
   imageUrl: string;
   description: string;
   year: string;
