@@ -65,9 +65,9 @@ export const TimelineSection: React.FC = () => {
                     <feGaussianBlur stdDeviation="7" />
                   </filter>
                   <radialGradient id="timeline-head-halo">
-                    <stop offset="0%" stopColor="#b8fbff" stopOpacity="0.9" />
-                    <stop offset="35%" stopColor="#59e7ff" stopOpacity="0.38" />
-                    <stop offset="100%" stopColor="#59e7ff" stopOpacity="0" />
+                    <stop offset="0%" stopColor="#ffffff" stopOpacity="0.9" />
+                    <stop offset="35%" stopColor="#ffffff" stopOpacity="0.38" />
+                    <stop offset="100%" stopColor="#ffffff" stopOpacity="0" />
                   </radialGradient>
                 </defs>
                 <path d={CIRCUIT_PATH} fill="none" stroke="#24282d" strokeWidth="12" strokeLinecap="round" strokeLinejoin="round" />
@@ -76,7 +76,7 @@ export const TimelineSection: React.FC = () => {
                   ref={trackPathRef}
                   d={CIRCUIT_PATH}
                   fill="none"
-                  stroke="#37dfff"
+                  stroke="#ffffff"
                   strokeWidth="8"
                   strokeLinecap="round"
                   strokeLinejoin="round"
@@ -84,13 +84,13 @@ export const TimelineSection: React.FC = () => {
                   filter="url(#timeline-laser-glow)"
                   style={{ pathLength: scrollYProgress }}
                 />
-                <motion.path d={CIRCUIT_PATH} fill="none" stroke="#8bf1ff" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" style={{ pathLength: scrollYProgress }} />
+                <motion.path d={CIRCUIT_PATH} fill="none" stroke="#ffffff" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" style={{ pathLength: scrollYProgress }} />
                 <motion.path d={CIRCUIT_PATH} fill="none" stroke="#f1feff" strokeWidth="0.8" strokeLinecap="round" strokeLinejoin="round" style={{ pathLength: scrollYProgress }} />
 
                 <g ref={laserHeadRef} transform={`translate(${STATIONS[0].x} ${STATIONS[0].y})`} pointerEvents="none">
                   <circle r="22" fill="url(#timeline-head-halo)" />
-                  <circle r="11" fill="#62eaff" opacity="0.24" filter="url(#timeline-head-glow)" />
-                  <circle r="4.5" fill="#76edff" />
+                  <circle r="11" fill="#ffffff" opacity="0.24" filter="url(#timeline-head-glow)" />
+                  <circle r="4.5" fill="#ffffff" />
                   <circle r="2" fill="#ffffff" />
                 </g>
 
@@ -98,9 +98,9 @@ export const TimelineSection: React.FC = () => {
                   const isActive = index === activeIndex;
                   return (
                     <g key={station.label} aria-label={`${station.label}: ${TIMELINE_DATA[index].title}`}>
-                      {isActive && <circle cx={station.x} cy={station.y} r="19" fill="#65eaff" opacity="0.12" />}
-                      <circle cx={station.x} cy={station.y} r={isActive ? 12 : 10} fill="#101010" stroke={isActive ? '#8bf1ff' : '#59616a'} strokeWidth={isActive ? 1.8 : 1.2} />
-                      <text x={station.x} y={station.y + 3} fill={isActive ? '#dffcff' : '#a3a3a3'} textAnchor="middle" fontSize="8" fontWeight="600" fontFamily="monospace">0{index + 1}</text>
+                      {isActive && <circle cx={station.x} cy={station.y} r="19" fill="#ffffff" opacity="0.12" />}
+                      <circle cx={station.x} cy={station.y} r={isActive ? 12 : 10} fill="#101010" stroke={isActive ? '#ffffff' : '#59616a'} strokeWidth={isActive ? 1.8 : 1.2} />
+                      <text x={station.x} y={station.y + 3} fill={isActive ? '#ffffff' : '#a3a3a3'} textAnchor="middle" fontSize="8" fontWeight="600" fontFamily="monospace">0{index + 1}</text>
                     </g>
                   );
                 })}
