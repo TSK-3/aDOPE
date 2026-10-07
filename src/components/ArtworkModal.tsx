@@ -1,6 +1,6 @@
 import React from 'react';
 import { Artwork } from '../types';
-import { X, Sparkles, Tag, Calendar, User, ShieldCheck, Download, Share2 } from 'lucide-react';
+import { X, Tag, Calendar, User } from 'lucide-react';
 
 interface ArtworkModalProps {
   artwork: Artwork | null;
@@ -107,27 +107,6 @@ export const ArtworkModal: React.FC<ArtworkModalProps> = ({ artwork, onClose }) 
               </div>
             </div>
 
-            {/* Actions */}
-            <div className="pt-6 border-t border-white/10 flex items-center gap-3">
-              <a
-                href={artwork.imageUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="flex-1 bg-white text-[#131313] font-mono text-xs py-3 uppercase tracking-widest font-semibold hover:bg-neutral-200 text-center flex justify-center items-center gap-2 transition-colors"
-              >
-                <Download className="w-4 h-4" /> High-Res Asset
-              </a>
-              <button
-                onClick={() => {
-                  navigator.clipboard?.writeText(window.location.href);
-                  alert('Asset reference link copied to clipboard.');
-                }}
-                className="p-3 border border-white/20 text-white hover:border-white transition-colors"
-                title="Share Link"
-              >
-                <Share2 className="w-4 h-4" />
-              </button>
-            </div>
           </div>
         </div>
       </div>
