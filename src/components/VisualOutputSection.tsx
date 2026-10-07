@@ -170,7 +170,7 @@ export const VisualOutputSection: React.FC<VisualOutputSectionProps> = ({
 }) => {
   const [selectedCategory, setSelectedCategory] = useState<string>('All');
   const [touchedArtworkId, setTouchedArtworkId] = useState<string | null>(null);
-  const touchRevealOnlyRef = useRef(false);
+  const touchedArtworkRef = useRef<string | null>(null);
 
   const categories = ['All', 'Branding', 'Editorial', 'Posters', 'UI/UX', 'Logo Design', 'Event Identity'];
 
@@ -234,17 +234,10 @@ export const VisualOutputSection: React.FC<VisualOutputSectionProps> = ({
             return (
               <div
                 key={art.id}
-                onPointerDown={(event) => {
-                  if (event.pointerType !== 'touch') {
-                    touchRevealOnlyRef.current = false;
-                    return;
-                  }
-                  touchRevealOnlyRef.current = touchedArtworkId !== art.id;
-                  if (touchRevealOnlyRef.current) setTouchedArtworkId(art.id);
-                }}
                 onClick={() => {
-                  if (touchRevealOnlyRef.current) {
-                    touchRevealOnlyRef.current = false;
+                  if (window.matchMedia('(hover: none)').matches && touchedArtworkRef.current !== art.id) {
+                    touchedArtworkRef.current = art.id;
+                    setTouchedArtworkId(art.id);
                     return;
                   }
                   onSelectArtwork(art);
@@ -263,8 +256,12 @@ export const VisualOutputSection: React.FC<VisualOutputSectionProps> = ({
                     </>
                   ) : (
                     <div
-                      className={`absolute inset-0 bg-cover bg-center transition-all duration-700 md:group-hover:scale-105 ${touchedArtworkId === art.id ? 'opacity-100 mix-blend-normal' : 'opacity-60 mix-blend-luminosity'} md:opacity-60 md:mix-blend-luminosity md:group-hover:opacity-100 md:group-hover:mix-blend-normal`}
-                      style={{ backgroundImage: `url('${art.imageUrl}')` }}
+                      className="absolute inset-0 bg-cover bg-center opacity-60 mix-blend-luminosity transition-all duration-700 md:group-hover:scale-105 md:group-hover:opacity-100 md:group-hover:mix-blend-normal"
+                      style={{
+                        backgroundImage: `url('${art.imageUrl}')`,
+                        opacity: touchedArtworkId === art.id ? 1 : undefined,
+                        mixBlendMode: touchedArtworkId === art.id ? 'normal' : undefined
+                      }}
                     />
                   )}
 

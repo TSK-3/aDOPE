@@ -58,14 +58,13 @@ export const ArtistsSection: React.FC = () => {
               <div>
                 <div
                   className="relative overflow-hidden mb-6 aspect-square bg-[#131313] border border-white/5"
-                  onPointerDown={(event) => {
-                    if (event.pointerType === 'touch') setTouchedArtistImage(artist.id);
-                  }}
+                  onClick={() => setTouchedArtistImage(artist.id)}
                 >
                   <img
                     src={artist.avatarUrl}
                     alt={artist.name}
-                    className={`w-full h-full object-cover transition-all duration-500 scale-100 md:group-hover:scale-105 ${touchedArtistImage === artist.id ? 'grayscale-0 mix-blend-normal' : 'grayscale mix-blend-luminosity'} md:grayscale md:mix-blend-luminosity md:group-hover:grayscale-0 md:group-hover:mix-blend-normal`}
+                    className="w-full h-full object-cover grayscale mix-blend-luminosity transition-all duration-500 scale-100 md:group-hover:scale-105 md:group-hover:grayscale-0 md:group-hover:mix-blend-normal"
+                    style={touchedArtistImage === artist.id ? { filter: 'none', mixBlendMode: 'normal' } : undefined}
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-[#1A1A1A] via-transparent to-transparent opacity-80" />
                 </div>

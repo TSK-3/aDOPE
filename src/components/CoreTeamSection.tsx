@@ -31,15 +31,14 @@ export const CoreTeamSection: React.FC = () => {
               <div className="absolute top-0 right-0 w-2 h-2 border-t border-r border-white/40 group-hover:border-white" />
               <div
                 className="aspect-[4/5] bg-[#0E0E0E] border border-white/10 mb-5 overflow-hidden flex items-center justify-center"
-                onPointerDown={(event) => {
-                  if (event.pointerType === 'touch') setTouchedMemberImage(member.id);
-                }}
+                onClick={() => setTouchedMemberImage(member.id)}
               >
                 {member.imageUrl ? (
                   <img
                     src={member.imageUrl}
                     alt={member.name}
-                    className={`w-full h-full object-cover transition-all duration-500 ${touchedMemberImage === member.id ? 'grayscale-0' : 'grayscale'} md:grayscale md:group-hover:grayscale-0`}
+                    className="w-full h-full object-cover grayscale transition-all duration-500 md:group-hover:grayscale-0"
+                    style={touchedMemberImage === member.id ? { filter: 'none' } : undefined}
                   />
                 ) : (
                   <span className="font-mono text-[10px] uppercase tracking-widest text-neutral-600">
