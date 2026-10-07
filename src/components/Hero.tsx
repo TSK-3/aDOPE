@@ -139,7 +139,7 @@ export const Hero: React.FC = () => {
       id="hero-section"
       className="relative h-[280vh] bg-black border-b border-white/10"
     >
-      <div ref={stageRef} className="sticky top-0 h-screen w-full overflow-hidden">
+      <div ref={stageRef} className="sticky top-0 h-screen h-[100dvh] w-full overflow-hidden">
         {/* Technical Measurements */}
         <div className="absolute top-24 left-8 z-30 font-mono text-[10px] text-white/30 hidden md:block select-none tracking-widest">
           X: {coords.x} / Y: {coords.y}

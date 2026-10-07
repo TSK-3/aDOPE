@@ -71,7 +71,7 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenJoinModal, activeSection }
         } ${
           scrolled
             ? 'bg-[#131313]/90 backdrop-blur-md border-b border-white/10 py-4'
-            : 'bg-[#131313]/50 backdrop-blur-sm border-b border-white/5 py-6'
+            : 'bg-transparent border-b border-transparent py-6'
         }`}
       >
         <div className="max-w-[1440px] mx-auto px-6 md:px-16 flex items-center justify-between">
