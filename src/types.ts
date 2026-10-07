@@ -26,7 +26,7 @@ export interface Artist {
 export interface CoreTeamMember {
   id: string;
   name: string;
-  role: 'Head' | 'Co-Head' | 'Secretary' | 'President';
+  role: 'Head' | 'Co-Head' | 'Secretary' | 'President' | 'Member';
   imageUrl?: string;
   bio: string;
 }

@@ -15,15 +15,15 @@ export const SOCIAL_LINKS = {
 
 export const ARTWORKS_DATA: Artwork[] = [
   {
-    id: 'art-1',
-    title: 'Merchandise',
-    category: 'Merchandise',
-    imageUrl: 'https://mir-s3-cdn-cf.behance.net/projects/max_808_webp/dd11a5167502011.Y3JvcCwxMzgwLDEwODAsMjcwLDA.png',
-    description: 'Official merchandise design from aDOPE Club’s public portfolio.',
-    year: '2023',
+    id: 'art-logo',
+    title: 'aDOPE Logo',
+    category: 'Logo Design',
+    imageUrl: LOGO_URL,
+    description: 'The club mark anchoring aDOPE’s visual identity.',
+    year: 'Identity',
     artistName: 'aDOPE Club',
-    specs: ['Graphic Design', 'Merchandise', 'Visual Identity'],
-    tags: ['Merchandise', 'Branding', 'MGIT'],
+    specs: ['Logo Design', 'Visual Identity', 'MGIT'],
+    tags: ['Logo Design', 'Branding', 'MGIT'],
     featured: true
   },
   {
@@ -191,6 +191,24 @@ export const CORE_TEAM_DATA: CoreTeamMember[] = [
     name: 'To be announced',
     role: 'President',
     bio: 'The president role will be updated when the official team announcement is published.'
+  },
+  {
+    id: 'core-member-01',
+    name: 'To be announced',
+    role: 'Member',
+    bio: 'Profile pending.'
+  },
+  {
+    id: 'core-member-02',
+    name: 'To be announced',
+    role: 'Member',
+    bio: 'Profile pending.'
+  },
+  {
+    id: 'core-member-03',
+    name: 'To be announced',
+    role: 'Member',
+    bio: 'Profile pending.'
   }
 ];
 

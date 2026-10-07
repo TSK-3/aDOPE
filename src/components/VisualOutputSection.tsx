@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { ARTWORKS_DATA } from '../data/mockData';
 import { Artwork } from '../types';
-import { Plus, Eye, Sparkles } from 'lucide-react';
+import { Plus, Eye } from 'lucide-react';
 
 interface VisualOutputSectionProps {
   onSelectArtwork: (artwork: Artwork) => void;
@@ -14,7 +14,7 @@ export const VisualOutputSection: React.FC<VisualOutputSectionProps> = ({
 }) => {
   const [selectedCategory, setSelectedCategory] = useState<string>('All');
 
-  const categories = ['All', 'Branding', 'Editorial', 'Posters', 'UI/UX', 'Merchandise', 'Logo Design'];
+  const categories = ['All', 'Branding', 'Editorial', 'Posters', 'UI/UX', 'Logo Design'];
 
   const filteredArtworks = selectedCategory === 'All'
     ? ARTWORKS_DATA
@@ -83,10 +83,14 @@ export const VisualOutputSection: React.FC<VisualOutputSectionProps> = ({
                   <div className="absolute top-0 left-0 w-2 h-2 border-t border-l border-white/50 z-10" />
                   <div className="absolute top-0 right-0 w-2 h-2 border-t border-r border-white/50 z-10" />
 
-                  <div
-                    className="absolute inset-0 bg-cover bg-center transition-transform duration-700 group-hover:scale-105 opacity-60 mix-blend-luminosity group-hover:opacity-100 group-hover:mix-blend-normal"
-                    style={{ backgroundImage: `url('${art.imageUrl}')` }}
-                  />
+                  {art.id === 'art-logo' ? (
+                    <img src={art.imageUrl} alt="" aria-hidden="true" className="absolute inset-0 m-auto h-[62%] w-[62%] object-contain invert opacity-80 transition-transform duration-700 group-hover:scale-105 group-hover:opacity-100" />
+                  ) : (
+                    <div
+                      className="absolute inset-0 bg-cover bg-center transition-transform duration-700 group-hover:scale-105 opacity-60 mix-blend-luminosity group-hover:opacity-100 group-hover:mix-blend-normal"
+                      style={{ backgroundImage: `url('${art.imageUrl}')` }}
+                    />
+                  )}
 
                   <div className="absolute inset-0 bg-gradient-to-t from-[#131313] via-transparent to-transparent opacity-85 group-hover:opacity-60 transition-opacity" />
 

@@ -3,13 +3,9 @@ import { ArrowDown, X } from 'lucide-react';
 import { ThreeCanvas } from './ThreeCanvas';
 import { LOGO_URL } from '../data/mockData';
 
-interface HeroProps {
-  onOpenJoinModal: () => void;
-}
-
 const VIDEO_SRC = '/intro.mp4';
 
-export const Hero: React.FC<HeroProps> = ({ onOpenJoinModal }) => {
+export const Hero: React.FC = () => {
   const [coords, setCoords] = useState({ x: '0.00', y: '100.00' });
   const [videoReady, setVideoReady] = useState(false);
   const [videoFailed, setVideoFailed] = useState(false);
@@ -202,21 +198,6 @@ export const Hero: React.FC<HeroProps> = ({ onOpenJoinModal }) => {
             <p className="font-sans text-xs sm:text-sm md:text-base text-neutral-400 max-w-lg mt-3 leading-relaxed">
               MGIT's design and digital art club. Comprehending ideas and designing memories.
             </p>
-
-            <div className="mt-6 flex flex-wrap justify-center items-center gap-3">
-              <button
-                onClick={onOpenJoinModal}
-                className="magnetic-btn bg-white text-[#131313] font-mono text-xs uppercase px-6 py-2.5 tracking-widest font-semibold hover:bg-neutral-200 transition-all"
-              >
-                Join Membership
-              </button>
-              <a
-                href="#work"
-                className="font-mono text-xs uppercase tracking-widest text-neutral-300 hover:text-white px-5 py-2.5 border border-white/20 hover:border-white transition-all"
-              >
-                Explore Archives
-              </a>
-            </div>
 
             <a
               href="#about"

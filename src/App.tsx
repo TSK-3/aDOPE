@@ -56,7 +56,7 @@ export default function App() {
 
       {/* Hero Section */}
       <div id="hero">
-        <Hero onOpenJoinModal={handleJoin} />
+        <Hero />
       </div>
 
       {/* Main Content Sections */}
