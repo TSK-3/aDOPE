@@ -11,8 +11,8 @@ export const ArtworkModal: React.FC<ArtworkModalProps> = ({ artwork, onClose }) 
   if (!artwork) return null;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 bg-black/90 backdrop-blur-xl animate-fade-in-up overflow-y-auto">
-      <div className="bg-[#131313] border border-white/20 max-w-4xl w-full relative my-8 overflow-hidden shadow-2xl">
+    <div className="fixed inset-0 z-[100] flex items-center justify-center p-2 sm:p-6 bg-black/90 backdrop-blur-xl animate-fade-in-up overflow-hidden">
+      <div className="bg-[#131313] border border-white/20 max-w-4xl w-full relative max-h-[calc(100dvh-1rem)] sm:max-h-[calc(100dvh-3rem)] flex flex-col overflow-hidden shadow-2xl">
         {/* Corner Accents */}
         <div className="absolute top-0 left-0 w-3 h-3 border-t-2 border-l-2 border-white z-20" />
         <div className="absolute top-0 right-0 w-3 h-3 border-t-2 border-r-2 border-white z-20" />
@@ -20,7 +20,7 @@ export const ArtworkModal: React.FC<ArtworkModalProps> = ({ artwork, onClose }) 
         <div className="absolute bottom-0 right-0 w-3 h-3 border-b-2 border-r-2 border-white z-20" />
 
         {/* Header Bar */}
-        <div className="flex items-center justify-between p-6 border-b border-white/10 bg-[#0E0E0E]">
+        <div className="sticky top-0 z-30 flex items-center justify-between gap-3 p-3 sm:p-6 border-b border-white/10 bg-[#0E0E0E] shrink-0">
           <div className="flex items-center gap-3">
             <span className="font-mono text-xs uppercase tracking-widest text-neutral-400 bg-white/5 px-2.5 py-1 border border-white/10">
               {artwork.category}
@@ -32,14 +32,14 @@ export const ArtworkModal: React.FC<ArtworkModalProps> = ({ artwork, onClose }) 
 
           <button
             onClick={onClose}
-            className="font-mono text-xs uppercase tracking-widest text-neutral-300 hover:text-white border border-white/20 hover:border-white px-3.5 py-1.5 transition-colors flex items-center gap-1.5"
+            className="min-h-11 min-w-11 font-mono text-xs uppercase tracking-widest text-white border border-white/40 hover:border-white px-3.5 py-2 transition-colors flex items-center justify-center gap-1.5 shrink-0"
           >
             <X className="w-4 h-4" /> Close
           </button>
         </div>
 
         {/* Content Layout */}
-        <div className="p-6 sm:p-8 grid grid-cols-1 lg:grid-cols-12 gap-8">
+        <div className="p-4 sm:p-8 grid grid-cols-1 lg:grid-cols-12 gap-6 sm:gap-8 overflow-y-auto overscroll-contain min-h-0">
           {/* Main Image View */}
           <div className="lg:col-span-7 bg-[#0A0A0A] border border-white/10 overflow-hidden relative flex items-center justify-center">
             <img

@@ -247,7 +247,7 @@ export const VisualOutputSection: React.FC<VisualOutputSectionProps> = ({
                     </>
                   ) : (
                     <div
-                      className="absolute inset-0 bg-cover bg-center transition-transform duration-700 group-hover:scale-105 opacity-60 mix-blend-luminosity group-hover:opacity-100 group-hover:mix-blend-normal"
+                      className="absolute inset-0 bg-cover bg-center transition-transform duration-700 md:group-hover:scale-105 opacity-100 md:opacity-60 md:mix-blend-luminosity md:group-hover:opacity-100 md:group-hover:mix-blend-normal"
                       style={{ backgroundImage: `url('${art.imageUrl}')` }}
                     />
                   )}

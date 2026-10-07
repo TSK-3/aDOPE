@@ -9,12 +9,14 @@ export const Hero: React.FC = () => {
   const [coords, setCoords] = useState({ x: '0.00', y: '100.00' });
   const [videoReady, setVideoReady] = useState(false);
   const [videoFailed, setVideoFailed] = useState(false);
+  const [videoNeedsTap, setVideoNeedsTap] = useState(false);
   const [skipped, setSkipped] = useState(false);
 
   const sectionRef = useRef<HTMLElement>(null);
   const stageRef = useRef<HTMLDivElement>(null);
   const slotRef = useRef<HTMLDivElement>(null);
   const videoWrapRef = useRef<HTMLDivElement>(null);
+  const videoRef = useRef<HTMLVideoElement>(null);
   const introTextRef = useRef<HTMLDivElement>(null);
   const heroContentRef = useRef<HTMLDivElement>(null);
   const progressRef = useRef(0);
@@ -28,6 +30,35 @@ export const Hero: React.FC = () => {
     window.addEventListener('mousemove', handleMouseMove);
     return () => window.removeEventListener('mousemove', handleMouseMove);
   }, []);
+
+  // Muted inline autoplay is supported by mobile browsers, but can still be
+  // blocked by user settings. In that case, expose an explicit tap-to-play.
+  useEffect(() => {
+    const video = videoRef.current;
+    if (!video || videoFailed) return;
+
+    const attemptPlayback = () => {
+      video.muted = true;
+      video.defaultMuted = true;
+      video.playsInline = true;
+      video.play().then(() => {
+        setVideoReady(true);
+        setVideoNeedsTap(false);
+      }).catch(() => {
+        setVideoNeedsTap(true);
+      });
+    };
+
+    const onCanPlay = () => {
+      setVideoReady(true);
+      attemptPlayback();
+    };
+
+    video.addEventListener('canplay', onCanPlay, { once: true });
+    if (video.readyState >= HTMLMediaElement.HAVE_FUTURE_DATA) attemptPlayback();
+
+    return () => video.removeEventListener('canplay', onCanPlay);
+  }, [videoFailed]);
 
   /* Scroll-driven morph: fullscreen video -> docked into hero-card slot */
   const applyProgress = useCallback(() => {
@@ -51,11 +82,12 @@ export const Hero: React.FC = () => {
     const tx = dx * eased;
     const ty = dy * eased;
 
-    // Slot size relative to stage size
-    const uniformScale = Math.max(slotRect.width / vw, slotRect.height / vh);
-
-    wrap.style.transform = `translate(-50%, -50%) translate(${tx}px, ${ty}px) scale(${Math.max(uniformScale, 0.001)})`;
-    wrap.style.borderRadius = `${eased * 10}px`;
+    // Animate the frame itself instead of scaling it, so the video never
+    // distorts while it returns to the intro box's native 16:9 aspect ratio.
+    wrap.style.width = `${vw + (slotRect.width - vw) * eased}px`;
+    wrap.style.height = `${vh + (slotRect.height - vh) * eased}px`;
+    wrap.style.transform = `translate(-50%, -50%) translate(${tx}px, ${ty}px)`;
+    wrap.style.borderRadius = '0px';
     wrap.style.boxShadow = eased > 0.05 ? '0 0 40px rgba(255,255,255,0.08)' : 'none';
 
     if (introText) {
@@ -127,9 +159,10 @@ export const Hero: React.FC = () => {
           className="absolute left-1/2 top-1/2 z-20 w-full h-full overflow-hidden bg-black will-change-transform"
           style={{ transform: 'translate(-50%, -50%)' }}
         >
-          <div className="absolute left-1/2 top-1/2 w-full aspect-video -translate-x-1/2 -translate-y-1/2 overflow-hidden bg-black">
+          <div className="absolute inset-0 w-full h-full overflow-hidden bg-black">
             {!videoFailed ? (
               <video
+                ref={videoRef}
                 className="w-full h-full object-cover"
                 src={VIDEO_SRC}
                 autoPlay
@@ -138,6 +171,10 @@ export const Hero: React.FC = () => {
                 playsInline
                 preload="auto"
                 onCanPlay={() => setVideoReady(true)}
+                onPlaying={() => {
+                  setVideoReady(true);
+                  setVideoNeedsTap(false);
+                }}
                 onError={() => setVideoFailed(true)}
                 style={{ opacity: videoReady ? 1 : 0, transition: 'opacity 0.6s' }}
               />
@@ -151,6 +188,23 @@ export const Hero: React.FC = () => {
                   </span>
                 </div>
               </div>
+            )}
+            {videoNeedsTap && !videoFailed && (
+              <button
+                type="button"
+                onClick={() => {
+                  const video = videoRef.current;
+                  if (!video) return;
+                  video.muted = true;
+                  video.play().then(() => {
+                    setVideoReady(true);
+                    setVideoNeedsTap(false);
+                  }).catch(() => setVideoNeedsTap(true));
+                }}
+                className="absolute inset-0 z-20 flex items-center justify-center bg-black/35 text-white font-mono text-xs uppercase tracking-[0.2em]"
+              >
+                Tap to play intro
+              </button>
             )}
           </div>
         </div>

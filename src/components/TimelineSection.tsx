@@ -4,12 +4,12 @@ import { CheckCircle2, ChevronRight, Flag, Gauge, Layers } from 'lucide-react';
 import { TIMELINE_DATA } from '../data/mockData';
 import { TimelineLog } from '../types';
 
-const CIRCUIT_PATH = 'M 170 500 L 735 500 C 795 500 835 465 835 410 L 835 310 C 835 270 805 240 765 240 L 710 240 C 675 240 650 215 650 180 L 650 130 C 650 90 620 70 580 70 L 400 70 C 360 70 330 100 330 140 L 330 190 C 330 230 300 255 260 255 L 210 255 C 170 255 145 280 145 320 L 145 430 C 145 470 160 495 200 500 Z';
+const CIRCUIT_PATH = 'M 780 490 C 816 495 842 470 825 433 L 745 285 C 730 255 707 240 673 239 L 610 239 C 585 239 570 222 558 200 C 543 174 520 168 495 178 L 422 207 C 385 222 350 205 337 175 C 324 145 340 117 363 90 C 385 65 371 40 345 44 C 314 48 294 78 273 109 C 250 144 216 157 185 144 C 153 132 145 105 167 81 C 190 55 177 31 151 36 C 115 42 88 78 80 115 C 71 155 95 183 131 205 L 384 357 C 422 380 466 369 498 342 L 546 301 C 573 278 606 284 621 311 C 638 341 622 366 594 382 L 559 401 C 530 417 528 449 548 470 C 568 490 596 482 618 465 L 669 427 C 699 405 728 413 742 444 L 785 531 C 797 557 780 575 750 566 C 722 557 712 530 724 509 L 744 473 C 756 451 777 462 780 490 Z';
 
 const STATIONS = [
-  { x: 170, y: 500, label: 'START / FINISH' },
-  { x: 710, y: 240, label: 'TURN 04' },
-  { x: 330, y: 190, label: 'FINAL SECTOR' },
+  { x: 780, y: 490, label: 'ORIGIN / MGIT' },
+  { x: 337, y: 175, label: 'TEAM OF 12' },
+  { x: 384, y: 357, label: 'PUBLIC ARCHIVE' },
 ];
 
 const getActiveIndex = (progress: number) => (progress < 0.4 ? 0 : progress < 0.76 ? 1 : 2);
@@ -44,42 +44,55 @@ export const TimelineSection: React.FC = () => {
           <div className="grid items-center gap-3 sm:gap-8 lg:grid-cols-[minmax(0,1.25fr)_minmax(300px,0.75fr)] lg:gap-16">
             <div className="relative">
               <div className="mb-1 flex items-center justify-between font-mono text-[8px] uppercase tracking-[0.2em] text-neutral-600 sm:mb-3 sm:text-[9px]">
-                <span className="flex items-center gap-2"><Gauge className="h-3 w-3" /> Circuit 01</span>
-                <span>One lap · Three stories</span>
+                <span className="flex items-center gap-2"><Gauge className="h-3 w-3" /> Circuit map / 01</span>
+                <span>Three archive entries</span>
               </div>
-              <svg viewBox="0 0 1000 660" className="block max-h-[35vh] w-full sm:max-h-[48vh] lg:max-h-[62vh]" role="img" aria-label="aDOPE archive circuit; the route draws as the timeline advances">
-                <path d={CIRCUIT_PATH} fill="none" stroke="#444" strokeWidth="50" strokeLinecap="round" strokeLinejoin="round" />
-                <path d={CIRCUIT_PATH} fill="none" stroke="#080808" strokeWidth="44" strokeLinecap="round" strokeLinejoin="round" />
-                <path d={CIRCUIT_PATH} fill="none" stroke="#777" strokeWidth="1.5" strokeDasharray="2 13" strokeLinecap="round" />
+              <svg viewBox="45 8 840 590" preserveAspectRatio="xMidYMid meet" className="mx-auto block max-h-[35vh] w-full max-w-[520px] sm:max-h-[48vh] lg:max-h-[62vh]" role="img" aria-label="aDOPE archive circuit; the route draws as the timeline advances">
+                <defs>
+                  <pattern id="timeline-finish-line" width="8" height="8" patternUnits="userSpaceOnUse">
+                    <rect width="4" height="4" fill="#d4d4d4" />
+                    <rect x="4" width="4" height="4" fill="#242424" />
+                    <rect y="4" width="4" height="4" fill="#242424" />
+                    <rect x="4" y="4" width="4" height="4" fill="#d4d4d4" />
+                  </pattern>
+                </defs>
+                <path d={CIRCUIT_PATH} fill="none" stroke="#777" strokeWidth="42" strokeLinecap="round" strokeLinejoin="round" />
+                <path d={CIRCUIT_PATH} fill="none" stroke="#151515" strokeWidth="34" strokeLinecap="round" strokeLinejoin="round" />
+                <path d={CIRCUIT_PATH} fill="none" stroke="#a3a3a3" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+                <g fill="none" stroke="#858585" strokeWidth="7" strokeLinecap="square">
+                  <path d="M 91 87 L 116 61 M 101 95 L 126 69 M 111 103 L 136 77" />
+                  <path d="M 752 268 L 777 254 M 761 284 L 786 270 M 770 300 L 795 286" />
+                  <path d="M 720 578 L 742 591 M 732 566 L 754 579 M 744 554 L 766 567" />
+                </g>
+                <g fill="#a3a3a3" fontSize="11" fontFamily="monospace" fontWeight="600" letterSpacing="1.5">
+                  <text x="810" y="493">START / FINISH</text>
+                  <text x="580" y="221">T1</text>
+                  <text x="486" y="401">T2</text>
+                  <text x="303" y="393">T3</text>
+                </g>
+                <rect x="774" y="470" width="12" height="40" fill="url(#timeline-finish-line)" />
                 <motion.path
                   d={CIRCUIT_PATH}
                   fill="none"
-                  stroke="#e5e5e5"
-                  strokeWidth="3"
+                  stroke="#d4d4d4"
+                  strokeWidth="2"
                   strokeLinecap="round"
                   strokeLinejoin="round"
                   style={{ pathLength: reduceMotion ? 1 : scrollYProgress }}
                 />
-                <path d="M 205 550 L 700 550 C 730 550 750 530 750 500" fill="none" stroke="#414141" strokeWidth="1.5" strokeDasharray="5 6" />
-                <path d="M 156 480 L 184 480 L 184 520 L 156 520 Z" fill="none" stroke="#aaa" strokeWidth="1.5" strokeDasharray="4 3" />
-                <text x="228" y="585" fill="#666" fontSize="13" fontFamily="monospace" letterSpacing="3">PIT LANE</text>
-                <text x="578" y="115" fill="#555" fontSize="12" fontFamily="monospace" letterSpacing="2">S3</text>
-                <text x="620" y="420" fill="#555" fontSize="12" fontFamily="monospace" letterSpacing="2">S2</text>
-                <text x="192" y="345" fill="#555" fontSize="12" fontFamily="monospace" letterSpacing="2">S1</text>
 
                 {STATIONS.map((station, index) => {
                   const isActive = index === activeIndex;
-                  const isPassed = index < activeIndex;
                   return (
                     <g key={station.label} aria-label={`${station.label}: ${TIMELINE_DATA[index].title}`}>
-                      <circle cx={station.x} cy={station.y} r={isActive ? 25 : 20} fill="#101010" stroke={isActive ? '#fff' : isPassed ? '#aaa' : '#454545'} strokeWidth={isActive ? 2 : 1.5} />
-                      <text x={station.x} y={station.y + 4} fill={isActive || isPassed ? '#fff' : '#858585'} textAnchor="middle" fontSize="11" fontFamily="monospace">0{index + 1}</text>
+                      <circle cx={station.x} cy={station.y} r={isActive ? 13 : 11} fill={isActive ? '#e5e5e5' : '#101010'} stroke="#d4d4d4" strokeWidth="1.5" />
+                      <text x={station.x} y={station.y + 3} fill={isActive ? '#101010' : '#e5e5e5'} textAnchor="middle" fontSize="8" fontWeight="600" fontFamily="monospace">0{index + 1}</text>
                     </g>
                   );
                 })}
               </svg>
               <div className="mt-0.5 flex items-center gap-2 font-mono text-[8px] uppercase tracking-[0.18em] text-neutral-600 sm:mt-1 sm:text-[9px]">
-                <span className="h-px w-6 bg-neutral-300" /> Scroll to follow the route
+                <span className="h-px w-6 bg-neutral-300" /> Scroll to follow the course
               </div>
             </div>
 
