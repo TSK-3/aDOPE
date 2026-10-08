@@ -192,9 +192,10 @@ export const CORE_TEAM_DATA: CoreTeamMember[] = [
   },
   {
     id: 'core-president',
-    name: 'To be announced',
+    name: 'Akshit Bulusu',
     role: 'President',
-    bio: 'The president role will be updated when the official team announcement is published.'
+    imageUrl: '/akshit-bulusu.jpeg',
+    bio: 'Leading aDOPE’s creative community and guiding the club’s vision and initiatives.'
   },
   {
     id: 'core-member-01',
