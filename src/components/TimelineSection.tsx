@@ -13,6 +13,12 @@ const STATIONS = [
 
 const getActiveIndex = (progress: number) => (progress < 0.4 ? 0 : progress < 0.76 ? 1 : 2);
 
+const CHECKPOINT_POPUP_POSITIONS = [
+  { x: 87.5, y: 81.7, above: true },
+  { x: 34.8, y: 28.3, above: false },
+  { x: 40.4, y: 59.1, above: false },
+];
+
 export const TimelineSection: React.FC = () => {
   const sectionRef = useRef<HTMLElement>(null);
   const trackPathRef = useRef<SVGPathElement>(null);
@@ -36,21 +42,19 @@ export const TimelineSection: React.FC = () => {
   return (
     <section ref={sectionRef} id="timeline" className="relative z-20 h-[300vh] bg-[#101010]">
       <div className="sticky top-0 flex h-screen items-center overflow-hidden">
-        <div className="mx-auto w-full max-w-[1440px] px-6 py-4 sm:py-10 md:px-16 md:py-16">
-          <div className="mb-3 text-center sm:mb-8">
+        <div className="mx-auto w-full max-w-[1800px] px-4 py-3 sm:px-8 sm:py-6 lg:px-12">
+          <div className="mb-2 text-center sm:mb-4">
             <div>
               <span className="mb-1 block font-mono text-[8px] uppercase tracking-[0.24em] text-neutral-500 sm:mb-3 sm:text-[10px]">04 / The aDOPE archive · MGIT, Hyderabad</span>
               <h2 className="text-2xl font-semibold uppercase tracking-[-0.045em] text-white sm:text-5xl">A history in motion</h2>
             </div>
           </div>
 
-          <div className="mx-auto flex w-full max-w-3xl flex-col items-center">
-            <div className="relative w-full">
-              <div className="mb-1 flex items-center justify-between font-mono text-[8px] uppercase tracking-[0.2em] text-neutral-600 sm:mb-3 sm:text-[9px]">
-                <span className="flex items-center gap-2"><Gauge className="h-3 w-3" /> Circuit map / 01</span>
-                <span>Three archive entries</span>
-              </div>
-              <svg viewBox="45 8 840 590" preserveAspectRatio="xMidYMid meet" className="mx-auto block max-h-[35vh] w-full max-w-[520px] sm:max-h-[48vh] lg:max-h-[62vh]" role="img" aria-label="aDOPE archive circuit; the route draws as the timeline advances">
+          <div className="relative mx-auto h-[42vh] w-full sm:h-[54vh] lg:h-[62vh]">
+            <div className="absolute left-0 top-0 z-10 flex items-center gap-2 font-mono text-[8px] uppercase tracking-[0.2em] text-neutral-600 sm:text-[9px]">
+              <Gauge className="h-3 w-3" /> Circuit map / 01 · Three archive entries
+            </div>
+            <svg viewBox="45 8 840 590" preserveAspectRatio="none" className="block h-full w-full" role="img" aria-label="aDOPE archive circuit; the route draws as the timeline advances">
                 <defs>
                   <filter id="timeline-laser-glow" x="-80%" y="-80%" width="260%" height="260%">
                     <feGaussianBlur stdDeviation="4" result="blur" />
@@ -100,21 +104,28 @@ export const TimelineSection: React.FC = () => {
                   );
                 })}
               </svg>
-            </div>
 
             <motion.article
               key={activeItem.id}
-              initial={{ opacity: 0, y: reduceMotion ? 0 : 12, scale: reduceMotion ? 1 : 0.98 }}
-              animate={{ opacity: 1, y: 0 }}
+              initial={{ opacity: 0, y: reduceMotion ? 0 : 8, scale: reduceMotion ? 1 : 0.97 }}
+              animate={{ opacity: 1, y: 0, scale: 1 }}
               transition={{ duration: reduceMotion ? 0 : 0.35 }}
-              className="relative z-10 -mt-10 grid w-full max-w-xl grid-cols-[100px_1fr] gap-4 border border-white/15 bg-[#171717]/95 p-4 shadow-[0_20px_80px_rgba(0,0,0,0.65)] backdrop-blur-md sm:-mt-16 sm:grid-cols-[160px_1fr] sm:gap-6 sm:p-6"
+              style={{
+                left: `clamp(0.5rem, calc(${CHECKPOINT_POPUP_POSITIONS[activeIndex].x}% - 190px), calc(100% - min(380px, calc(100% - 1rem)) - 0.5rem))`,
+                top: CHECKPOINT_POPUP_POSITIONS[activeIndex].above
+                  ? `calc(${CHECKPOINT_POPUP_POSITIONS[activeIndex].y}% - 1rem)`
+                  : `calc(${CHECKPOINT_POPUP_POSITIONS[activeIndex].y}% + 1rem)`,
+                transform: CHECKPOINT_POPUP_POSITIONS[activeIndex].above ? 'translateY(-100%)' : undefined,
+                width: 'min(380px, calc(100% - 1rem))',
+              }}
+              className="absolute z-20 grid grid-cols-[96px_1fr] gap-3 border border-white/20 bg-[#171717]/95 p-3 shadow-[0_20px_80px_rgba(0,0,0,0.75)] backdrop-blur-md sm:grid-cols-[132px_1fr] sm:gap-4 sm:p-4"
               aria-live="polite"
             >
-              <img src={activeItem.imageUrl} alt={activeItem.title} className="h-full min-h-28 w-full object-cover grayscale" />
+              <img src={activeItem.imageUrl} alt={activeItem.title} className="h-24 w-full object-cover grayscale sm:h-28" />
               <div className="self-center">
-                <span className="mb-1 block font-mono text-[8px] uppercase tracking-[0.18em] text-neutral-500 sm:text-[10px]">{STATIONS[activeIndex].label} · {activeItem.date}</span>
-                <h3 className="mb-2 text-base font-semibold leading-tight tracking-[-0.035em] text-white sm:text-2xl">{activeItem.title}</h3>
-                <p className="text-[10px] leading-relaxed text-neutral-400 sm:text-xs">{activeItem.description}</p>
+                <span className="mb-1 block font-mono text-[8px] uppercase tracking-[0.16em] text-neutral-500">{STATIONS[activeIndex].label} · {activeItem.date}</span>
+                <h3 className="mb-1 text-sm font-semibold leading-tight tracking-[-0.035em] text-white sm:text-lg">{activeItem.title}</h3>
+                <p className="text-[9px] leading-relaxed text-neutral-400 sm:text-[11px]">{activeItem.description}</p>
               </div>
             </motion.article>
           </div>
