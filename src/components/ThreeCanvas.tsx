@@ -22,7 +22,8 @@ export const ThreeCanvas: React.FC<ThreeCanvasProps> = ({ className = '' }) => {
 
     const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
     renderer.setSize(width, height);
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+    const compactDevice = window.matchMedia('(pointer: coarse)').matches;
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, compactDevice ? 1.25 : 2));
     
     // Clear existing canvas children if any
     while (container.firstChild) {
@@ -77,7 +78,7 @@ export const ThreeCanvas: React.FC<ThreeCanvasProps> = ({ className = '' }) => {
     }
 
     // 3. Starfield particles
-    const starCount = 900;
+    const starCount = compactDevice ? 320 : 900;
     const sGeo = new THREE.BufferGeometry();
     const sPos = new Float32Array(starCount * 3);
     for (let i = 0; i < starCount * 3; i += 3) {
@@ -121,13 +122,15 @@ export const ThreeCanvas: React.FC<ThreeCanvasProps> = ({ className = '' }) => {
       targetX = (e.clientX / window.innerWidth - 0.5) * 2;
       targetY = (e.clientY / window.innerHeight - 0.5) * 2;
     };
-    window.addEventListener('mousemove', handleMouseMove);
+    if (!compactDevice) window.addEventListener('mousemove', handleMouseMove, { passive: true });
 
     // Animation Loop
-    let animationFrameId: number;
+    let animationFrameId = 0;
+    let isVisible = false;
     let clock = new THREE.Clock();
 
     const animate = () => {
+      if (!isVisible) return;
       animationFrameId = requestAnimationFrame(animate);
       const t = clock.getElapsedTime();
 
@@ -161,8 +164,15 @@ export const ThreeCanvas: React.FC<ThreeCanvasProps> = ({ className = '' }) => {
 
       renderer.render(scene, camera);
     };
-
-    animate();
+    const visibilityObserver = new IntersectionObserver(([entry]) => {
+      isVisible = entry.isIntersecting;
+      if (isVisible && !animationFrameId) animationFrameId = requestAnimationFrame(animate);
+      if (!isVisible && animationFrameId) {
+        cancelAnimationFrame(animationFrameId);
+        animationFrameId = 0;
+      }
+    });
+    visibilityObserver.observe(container);
 
     // Resize Handling via ResizeObserver
     const resizeObserver = new ResizeObserver((entries) => {
@@ -180,7 +190,8 @@ export const ThreeCanvas: React.FC<ThreeCanvasProps> = ({ className = '' }) => {
 
     return () => {
       cancelAnimationFrame(animationFrameId);
-      window.removeEventListener('mousemove', handleMouseMove);
+      visibilityObserver.disconnect();
+      if (!compactDevice) window.removeEventListener('mousemove', handleMouseMove);
       resizeObserver.disconnect();
       if (renderer.domElement && container.contains(renderer.domElement)) {
         container.removeChild(renderer.domElement);

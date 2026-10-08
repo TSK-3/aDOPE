@@ -23,9 +23,9 @@ export const ArtistsSection: React.FC = () => {
       );
 
   return (
-    <section id="artists" className="py-24 sm:py-32 bg-[#0E0E0E] border-b border-white/10 relative z-20">
-      <div className="max-w-[1440px] mx-auto px-6 md:px-16 relative">
-        <div className="flex flex-col md:flex-row justify-between items-start md:items-end mb-16 gap-6">
+    <section id="artists" className="py-16 sm:py-24 lg:py-32 bg-[#0E0E0E] border-b border-white/10 relative z-20">
+      <div className="max-w-[1440px] mx-auto px-4 sm:px-6 md:px-16 relative">
+        <div className="flex flex-col md:flex-row justify-between items-start md:items-end mb-10 sm:mb-16 gap-5 sm:gap-6">
           <div>
             <span className="font-mono text-xs uppercase tracking-widest text-neutral-400 block mb-3">
               02 // Collective Members
@@ -36,12 +36,12 @@ export const ArtistsSection: React.FC = () => {
           </div>
 
           {/* Filter Pills */}
-          <div className="flex flex-wrap gap-2">
+          <div className="flex flex-wrap gap-2" aria-label="Filter artists by specialty">
             {specialties.map((spec) => (
               <button
                 key={spec}
                 onClick={() => setSelectedSpecialty(spec)}
-                className={`font-mono text-xs px-3.5 py-1.5 uppercase tracking-wider transition-all border ${
+                className={`min-h-10 font-mono text-[11px] sm:text-xs px-3 py-2 uppercase tracking-wider transition-all border ${
                   selectedSpecialty === spec
                     ? 'bg-white text-[#131313] border-white font-semibold'
                     : 'bg-[#1A1A1A] text-neutral-400 border-white/10 hover:border-white/30 hover:text-white'
@@ -54,11 +54,11 @@ export const ArtistsSection: React.FC = () => {
         </div>
 
         {/* Artists Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
           {filteredArtists.map((artist: Artist) => (
             <div
               key={artist.id}
-              className="bg-[#1A1A1A] border border-white/10 p-6 flex flex-col justify-between group hover:border-white/40 transition-all duration-300 relative"
+              className="bg-[#1A1A1A] border border-white/10 p-4 sm:p-6 flex flex-col justify-between group hover:border-white/40 transition-all duration-300 relative"
             >
               <div className="absolute top-0 right-0 w-2 h-2 border-t border-r border-white/40" />
 

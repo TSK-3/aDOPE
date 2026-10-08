@@ -3,8 +3,8 @@ import { SOCIAL_LINKS } from '../data/mockData';
 
 export const Footer: React.FC = () => {
   return (
-    <footer className="bg-[#0E0E0E] border-t border-white/10 w-full relative z-20 py-12 px-6 md:px-16">
-      <div className="max-w-[1440px] mx-auto flex flex-col md:flex-row justify-between items-center gap-8">
+    <footer className="bg-[#0E0E0E] border-t border-white/10 w-full relative z-20 py-10 sm:py-12 px-4 sm:px-6 md:px-16">
+      <div className="max-w-[1440px] mx-auto flex flex-col md:flex-row justify-between items-center gap-6 sm:gap-8">
         {/* Brand Title */}
         <div className="flex flex-col items-center md:items-start">
           <div className="text-3xl sm:text-5xl font-extrabold text-white tracking-tight uppercase">
@@ -21,7 +21,7 @@ export const Footer: React.FC = () => {
         </div>
 
         {/* Social / External Links */}
-        <ul className="flex flex-wrap justify-center gap-6">
+        <ul className="flex flex-wrap justify-center gap-4 sm:gap-6">
           <li>
             <a
               href={SOCIAL_LINKS.behance}

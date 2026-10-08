@@ -137,7 +137,7 @@ export const Hero: React.FC = () => {
     <section
       ref={sectionRef}
       id="hero-section"
-      className="relative h-[280vh] bg-black border-b border-white/10"
+      className="relative h-[220svh] bg-black border-b border-white/10 md:h-[280vh]"
     >
       <div ref={stageRef} className="sticky top-0 h-[100dvh] w-full overflow-hidden">
         {/* Technical Measurements */}
@@ -218,7 +218,7 @@ export const Hero: React.FC = () => {
         {!skipped && (
           <button
             onClick={handleSkip}
-            className="absolute bottom-8 right-8 z-50 flex items-center gap-2 font-mono text-[10px] uppercase tracking-widest text-white/70 hover:text-white border border-white/25 hover:border-white px-4 py-2 bg-black/40 backdrop-blur-sm transition-all"
+            className="absolute bottom-[calc(env(safe-area-inset-bottom)+1rem)] right-4 z-50 flex min-h-11 items-center gap-2 font-mono text-[10px] uppercase tracking-widest text-white/70 hover:text-white border border-white/25 hover:border-white px-4 py-2 sm:bottom-8 sm:right-8 bg-black/40 backdrop-blur-sm transition-all"
           >
             Skip Intro <X className="w-3 h-3" />
           </button>
@@ -228,12 +228,12 @@ export const Hero: React.FC = () => {
         <div className="absolute inset-0 z-30 flex items-center justify-center px-6">
           <div
             ref={heroContentRef}
-            className="relative opacity-0 container max-w-[960px] mx-auto flex flex-col items-center justify-center text-center border border-white/10 p-6 md:p-10 bg-black/80 backdrop-blur-md"
+            className="relative opacity-0 container max-w-[960px] mx-auto flex flex-col items-center justify-center text-center border border-white/10 p-4 sm:p-6 md:p-10 bg-black/80 backdrop-blur-md"
           >
             {/* Video slot — the fullscreen video docks exactly here */}
             <div
               ref={slotRef}
-              className="relative w-full max-w-[720px] aspect-video border border-white/15 overflow-hidden bg-black mb-8"
+              className="relative w-full max-w-[720px] aspect-video border border-white/15 overflow-hidden bg-black mb-5 sm:mb-8"
             >
               <div className="absolute top-0 left-0 w-3 h-3 border-t-2 border-l-2 border-white z-10" />
               <div className="absolute top-0 right-0 w-3 h-3 border-t-2 border-r-2 border-white z-10" />

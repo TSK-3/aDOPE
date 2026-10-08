@@ -32,8 +32,8 @@ export const JoinModal: React.FC<JoinModalProps> = ({ isOpen, onClose }) => {
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 bg-black/90 backdrop-blur-xl animate-fade-in-up overflow-y-auto">
-      <div className="bg-[#131313] border border-white/20 max-w-xl w-full relative my-8 overflow-hidden shadow-2xl">
+    <div className="fixed inset-0 z-50 flex items-start sm:items-center justify-center p-2 sm:p-6 bg-black/90 backdrop-blur-xl animate-fade-in-up overflow-y-auto overscroll-contain">
+      <div className="bg-[#131313] border border-white/20 max-w-xl w-full relative my-2 sm:my-8 max-h-[calc(100dvh-1rem)] overflow-y-auto overscroll-contain shadow-2xl">
         {/* Corner Brackets */}
         <div className="absolute top-0 left-0 w-3 h-3 border-t-2 border-l-2 border-white z-20" />
         <div className="absolute top-0 right-0 w-3 h-3 border-t-2 border-r-2 border-white z-20" />
@@ -41,17 +41,17 @@ export const JoinModal: React.FC<JoinModalProps> = ({ isOpen, onClose }) => {
         <div className="absolute bottom-0 right-0 w-3 h-3 border-b-2 border-r-2 border-white z-20" />
 
         {/* Modal Top Bar */}
-        <div className="flex items-center justify-between p-6 border-b border-white/10 bg-[#0E0E0E]">
-          <div className="flex items-center gap-2">
+        <div className="flex items-center justify-between gap-3 p-4 sm:p-6 border-b border-white/10 bg-[#0E0E0E]">
+          <div className="flex items-center gap-2 min-w-0">
             <Shield className="w-4 h-4 text-white" />
-            <span className="font-mono text-xs uppercase tracking-widest text-neutral-300 font-semibold">
+            <span className="font-mono text-[10px] sm:text-xs uppercase tracking-[0.12em] sm:tracking-widest text-neutral-300 font-semibold">
               Adope Club // Membership Portal
             </span>
           </div>
 
           <button
             onClick={onClose}
-            className="font-mono text-xs uppercase tracking-widest text-neutral-400 hover:text-white border border-white/20 px-3 py-1"
+            className="min-h-11 min-w-11 flex items-center justify-center font-mono text-xs uppercase tracking-widest text-neutral-400 hover:text-white border border-white/20 px-3 py-1 shrink-0"
           >
             <X className="w-4 h-4" />
           </button>
@@ -102,7 +102,7 @@ export const JoinModal: React.FC<JoinModalProps> = ({ isOpen, onClose }) => {
           </div>
         ) : (
           /* Form View */
-          <form onSubmit={handleSubmit} className="p-6 sm:p-8 space-y-5">
+          <form onSubmit={handleSubmit} className="p-4 sm:p-8 space-y-4 sm:space-y-5">
             <div>
               <label className="font-mono text-xs uppercase tracking-widest text-neutral-400 block mb-2 font-medium">
                 01 // Full Name *

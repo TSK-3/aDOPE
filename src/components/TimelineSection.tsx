@@ -1,5 +1,5 @@
-import React, { useRef, useState } from 'react';
-import { motion, useMotionValueEvent, useReducedMotion, useScroll } from 'motion/react';
+import React, { useEffect, useRef, useState } from 'react';
+import { motion, useMotionValueEvent, useScroll } from 'motion/react';
 import { Gauge } from 'lucide-react';
 import { TIMELINE_DATA } from '../data/mockData';
 
@@ -11,8 +11,6 @@ const STATIONS = [
   { x: 384, y: 357, label: 'PUBLIC ARCHIVE' },
 ];
 
-const getActiveIndex = (progress: number) => (progress < 0.4 ? 0 : progress < 0.76 ? 1 : 2);
-
 const CHECKPOINT_POPUP_POSITIONS = [
   { x: 87.5, y: 81.7, above: true },
   { x: 34.8, y: 28.3, above: false },
@@ -23,12 +21,37 @@ export const TimelineSection: React.FC = () => {
   const sectionRef = useRef<HTMLElement>(null);
   const trackPathRef = useRef<SVGPathElement>(null);
   const laserHeadRef = useRef<SVGGElement>(null);
+  const checkpointProgressRef = useRef<number[]>([0, 0.4, 0.76]);
   const [activeIndex, setActiveIndex] = useState(0);
-  const reduceMotion = useReducedMotion();
   const { scrollYProgress } = useScroll({ target: sectionRef, offset: ['start start', 'end end'] });
 
+  useEffect(() => {
+    const path = trackPathRef.current;
+    if (!path) return;
+
+    const totalLength = path.getTotalLength();
+    checkpointProgressRef.current = STATIONS.map((station) => {
+      let closestProgress = 0;
+      let closestDistance = Number.POSITIVE_INFINITY;
+      for (let sample = 0; sample <= 500; sample += 1) {
+        const progress = sample / 500;
+        const point = path.getPointAtLength(totalLength * progress);
+        const dx = point.x - station.x;
+        const dy = point.y - station.y;
+        const distance = dx * dx + dy * dy;
+        if (distance < closestDistance) {
+          closestDistance = distance;
+          closestProgress = progress;
+        }
+      }
+      return closestProgress;
+    });
+  }, []);
+
   useMotionValueEvent(scrollYProgress, 'change', (progress) => {
-    setActiveIndex(getActiveIndex(progress));
+    const checkpoints = checkpointProgressRef.current;
+    const nextIndex = progress < checkpoints[1] ? 0 : progress < checkpoints[2] ? 1 : 2;
+    setActiveIndex((current) => current === nextIndex ? current : nextIndex);
     const path = trackPathRef.current;
     const head = laserHeadRef.current;
     if (path && head) {
@@ -40,21 +63,21 @@ export const TimelineSection: React.FC = () => {
   const activeItem = TIMELINE_DATA[activeIndex];
 
   return (
-    <section ref={sectionRef} id="timeline" className="relative z-20 h-[300vh] bg-[#101010]">
+    <section ref={sectionRef} id="timeline" className="relative z-20 h-[220svh] bg-[#101010] md:h-[300vh]">
       <div className="sticky top-0 flex h-screen items-center overflow-hidden">
-        <div className="mx-auto w-full max-w-[1800px] px-4 py-3 sm:px-8 sm:py-6 lg:px-12">
-          <div className="mb-2 text-center sm:mb-4">
+        <div className="relative mx-auto h-screen w-full max-w-none px-0">
+          <div className="absolute inset-x-0 top-3 z-20 text-center sm:top-5">
             <div>
-              <span className="mb-1 block font-mono text-[8px] uppercase tracking-[0.24em] text-neutral-500 sm:mb-3 sm:text-[10px]">04 / The aDOPE archive · MGIT, Hyderabad</span>
-              <h2 className="text-2xl font-semibold uppercase tracking-[-0.045em] text-white sm:text-5xl">A history in motion</h2>
+              <span className="mb-1 block font-mono text-[8px] uppercase tracking-[0.24em] text-neutral-500 sm:mb-2 sm:text-[10px]">04 / The aDOPE archive · MGIT, Hyderabad</span>
+              <h2 className="text-xl font-semibold uppercase tracking-[-0.045em] text-white sm:text-4xl">A history in motion</h2>
             </div>
           </div>
 
-          <div className="relative mx-auto h-[42vh] w-full sm:h-[54vh] lg:h-[62vh]">
+          <div className="absolute inset-x-[5vw] bottom-[5vh] top-[12vh]">
             <div className="absolute left-0 top-0 z-10 flex items-center gap-2 font-mono text-[8px] uppercase tracking-[0.2em] text-neutral-600 sm:text-[9px]">
-              <Gauge className="h-3 w-3" /> Circuit map / 01 · Three archive entries
+              <Gauge className="h-3 w-3" /> Top-down circuit / 01 · Three archive entries
             </div>
-            <svg viewBox="45 8 840 590" preserveAspectRatio="none" className="block h-full w-full" role="img" aria-label="aDOPE archive circuit; the route draws as the timeline advances">
+            <svg viewBox="45 8 840 590" preserveAspectRatio="none" className="block h-full w-full" role="img" aria-label="Top-down view of the aDOPE archive circuit; the route draws as the timeline advances">
                 <defs>
                   <filter id="timeline-laser-glow" x="-80%" y="-80%" width="260%" height="260%">
                     <feGaussianBlur stdDeviation="4" result="blur" />
@@ -69,22 +92,25 @@ export const TimelineSection: React.FC = () => {
                     <stop offset="100%" stopColor="#ffffff" stopOpacity="0" />
                   </radialGradient>
                 </defs>
-                <path d={CIRCUIT_PATH} fill="none" stroke="#24282d" strokeWidth="12" strokeLinecap="round" strokeLinejoin="round" />
-                <path d={CIRCUIT_PATH} fill="none" stroke="#454b52" strokeWidth="1.25" strokeLinecap="round" strokeLinejoin="round" />
+                {/* Layered strokes turn the route into a flat, readable top-down track. */}
+                <path d={CIRCUIT_PATH} fill="none" stroke="#090a0c" strokeWidth="27" strokeLinecap="round" strokeLinejoin="round" />
+                <path d={CIRCUIT_PATH} fill="none" stroke="#25292e" strokeWidth="21" strokeLinecap="round" strokeLinejoin="round" />
+                <path d={CIRCUIT_PATH} fill="none" stroke="#72777b" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round" />
+                <path d={CIRCUIT_PATH} fill="none" stroke="#a2a6a8" strokeWidth="0.9" strokeLinecap="round" strokeLinejoin="round" strokeDasharray="9 13" opacity="0.72" />
                 <motion.path
                   ref={trackPathRef}
                   d={CIRCUIT_PATH}
                   fill="none"
                   stroke="#ffffff"
-                  strokeWidth="8"
+                  strokeWidth="2.8"
                   strokeLinecap="round"
                   strokeLinejoin="round"
                   opacity="0.42"
                   filter="url(#timeline-laser-glow)"
                   style={{ pathLength: scrollYProgress }}
                 />
-                <motion.path d={CIRCUIT_PATH} fill="none" stroke="#ffffff" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" style={{ pathLength: scrollYProgress }} />
-                <motion.path d={CIRCUIT_PATH} fill="none" stroke="#f1feff" strokeWidth="0.8" strokeLinecap="round" strokeLinejoin="round" style={{ pathLength: scrollYProgress }} />
+                <motion.path d={CIRCUIT_PATH} fill="none" stroke="#ffffff" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" style={{ pathLength: scrollYProgress }} />
+                <motion.path d={CIRCUIT_PATH} fill="none" stroke="#f1feff" strokeWidth="0.7" strokeLinecap="round" strokeLinejoin="round" style={{ pathLength: scrollYProgress }} />
 
                 <g ref={laserHeadRef} transform={`translate(${STATIONS[0].x} ${STATIONS[0].y})`} pointerEvents="none">
                   <circle r="22" fill="url(#timeline-head-halo)" />
@@ -96,10 +122,9 @@ export const TimelineSection: React.FC = () => {
                 {STATIONS.map((station, index) => {
                   const isActive = index === activeIndex;
                   return (
-                    <g key={station.label} aria-label={`${station.label}: ${TIMELINE_DATA[index].title}`}>
-                      {isActive && <circle cx={station.x} cy={station.y} r="19" fill="#ffffff" opacity="0.12" />}
-                      <circle cx={station.x} cy={station.y} r={isActive ? 12 : 10} fill="#101010" stroke={isActive ? '#ffffff' : '#59616a'} strokeWidth={isActive ? 1.8 : 1.2} />
-                      <text x={station.x} y={station.y + 3} fill={isActive ? '#ffffff' : '#a3a3a3'} textAnchor="middle" fontSize="8" fontWeight="600" fontFamily="monospace">0{index + 1}</text>
+                    <g key={station.label} aria-label={`Checkpoint ${station.label}: ${TIMELINE_DATA[index].title}`}>
+                      {isActive && <circle cx={station.x} cy={station.y} r="14" fill="#ffffff" opacity="0.1" />}
+                      <circle cx={station.x} cy={station.y} r={isActive ? 5.5 : 4.5} fill={isActive ? '#ffffff' : '#a3a8ad'} stroke="#101010" strokeWidth="2" />
                     </g>
                   );
                 })}
@@ -107,25 +132,26 @@ export const TimelineSection: React.FC = () => {
 
             <motion.article
               key={activeItem.id}
-              initial={{ opacity: 0, y: reduceMotion ? 0 : 8, scale: reduceMotion ? 1 : 0.97 }}
+              initial={false}
               animate={{ opacity: 1, y: 0, scale: 1 }}
-              transition={{ duration: reduceMotion ? 0 : 0.35 }}
+              transition={{ duration: 0 }}
               style={{
-                left: `clamp(0.5rem, calc(${CHECKPOINT_POPUP_POSITIONS[activeIndex].x}% - 190px), calc(100% - min(380px, calc(100% - 1rem)) - 0.5rem))`,
+                left: `clamp(0.25rem, calc(${CHECKPOINT_POPUP_POSITIONS[activeIndex].x}% - 190px), calc(100% - min(380px, calc(100% - 0.5rem)) - 0.25rem))`,
                 top: CHECKPOINT_POPUP_POSITIONS[activeIndex].above
                   ? `calc(${CHECKPOINT_POPUP_POSITIONS[activeIndex].y}% - 1rem)`
                   : `calc(${CHECKPOINT_POPUP_POSITIONS[activeIndex].y}% + 1rem)`,
                 transform: CHECKPOINT_POPUP_POSITIONS[activeIndex].above ? 'translateY(-100%)' : undefined,
-                width: 'min(380px, calc(100% - 1rem))',
+                width: 'min(380px, calc(100% - 0.5rem))',
               }}
-              className="absolute z-20 grid grid-cols-[96px_1fr] gap-3 border border-white/20 bg-[#171717]/95 p-3 shadow-[0_20px_80px_rgba(0,0,0,0.75)] backdrop-blur-md sm:grid-cols-[132px_1fr] sm:gap-4 sm:p-4"
+              className="absolute z-20 grid grid-cols-[72px_1fr] gap-2 border border-white/20 bg-[#171717]/95 p-2.5 shadow-[0_20px_80px_rgba(0,0,0,0.75)] backdrop-blur-md sm:grid-cols-[132px_1fr] sm:gap-4 sm:p-4"
               aria-live="polite"
+              aria-atomic="true"
             >
-              <img src={activeItem.imageUrl} alt={activeItem.title} className="h-24 w-full object-cover grayscale sm:h-28" />
+              <img src={activeItem.imageUrl} alt={activeItem.title} className="h-20 w-full object-cover grayscale sm:h-28" />
               <div className="self-center">
-                <span className="mb-1 block font-mono text-[8px] uppercase tracking-[0.16em] text-neutral-500">{STATIONS[activeIndex].label} · {activeItem.date}</span>
-                <h3 className="mb-1 text-sm font-semibold leading-tight tracking-[-0.035em] text-white sm:text-lg">{activeItem.title}</h3>
-                <p className="text-[9px] leading-relaxed text-neutral-400 sm:text-[11px]">{activeItem.description}</p>
+                <span className="mb-1 block font-mono text-[7px] uppercase tracking-[0.12em] text-neutral-500 sm:text-[8px] sm:tracking-[0.16em]">{STATIONS[activeIndex].label} · {activeItem.date}</span>
+                <h3 className="mb-1 text-xs font-semibold leading-tight tracking-[-0.035em] text-white sm:text-lg">{activeItem.title}</h3>
+                <p className="text-[8px] leading-relaxed text-neutral-400 sm:text-[11px]">{activeItem.description}</p>
               </div>
             </motion.article>
           </div>

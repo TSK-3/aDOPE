@@ -21,7 +21,8 @@ const NirvanaPhoenix: React.FC = () => {
     const scene = new THREE.Scene();
     const camera = new THREE.PerspectiveCamera(34, mount.clientWidth / mount.clientHeight, 0.1, 100);
     camera.position.z = 8.2;
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+    const compactDevice = window.matchMedia('(pointer: coarse)').matches;
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, compactDevice ? 1.25 : 2));
     renderer.setSize(mount.clientWidth, mount.clientHeight);
     renderer.setClearColor(0x000000, 0);
     mount.appendChild(renderer.domElement);
@@ -35,9 +36,10 @@ const NirvanaPhoenix: React.FC = () => {
       const height = 4.15;
       const width = height * aspect;
 
-      // Repeated, slightly darkened relief layers give the cutout a visible edge
-      // when the emblem tilts, while keeping the supplied phoenix artwork intact.
-      for (let layer = 0; layer < 20; layer += 1) {
+      // A shallow, even relief gives the cutout a slim edge when it tilts.
+      const reliefLayers = 7;
+      const reliefDepth = 0.12;
+      for (let layer = 0; layer < reliefLayers; layer += 1) {
         const relief = new THREE.Mesh(
           new THREE.PlaneGeometry(width, height),
           new THREE.MeshBasicMaterial({
@@ -49,7 +51,7 @@ const NirvanaPhoenix: React.FC = () => {
             side: THREE.DoubleSide
           })
         );
-        relief.position.z = -0.58 + layer * 0.03;
+        relief.position.z = -reliefDepth + (layer / (reliefLayers - 1)) * reliefDepth;
         emblem.add(relief);
       }
 
@@ -71,6 +73,7 @@ const NirvanaPhoenix: React.FC = () => {
     let velocityX = 0;
     let velocityY = 0;
     let frameId = 0;
+    let isVisible = false;
     const onPointerDown = (event: PointerEvent) => {
       dragging = true;
       moved = false;
@@ -124,6 +127,7 @@ const NirvanaPhoenix: React.FC = () => {
     resizeObserver.observe(mount);
 
     const animate = () => {
+      if (!isVisible) return;
       frameId = window.requestAnimationFrame(animate);
       if (!dragging) {
         emblem.rotation.x += velocityX;
@@ -133,10 +137,19 @@ const NirvanaPhoenix: React.FC = () => {
       }
       renderer.render(scene, camera);
     };
-    animate();
+    const visibilityObserver = new IntersectionObserver(([entry]) => {
+      isVisible = entry.isIntersecting;
+      if (isVisible && !frameId) frameId = window.requestAnimationFrame(animate);
+      if (!isVisible && frameId) {
+        window.cancelAnimationFrame(frameId);
+        frameId = 0;
+      }
+    });
+    visibilityObserver.observe(mount);
 
     return () => {
       window.cancelAnimationFrame(frameId);
+      visibilityObserver.disconnect();
       resizeObserver.disconnect();
       mount.removeEventListener('pointerdown', onPointerDown);
       mount.removeEventListener('pointermove', onPointerMove);
@@ -179,10 +192,10 @@ export const VisualOutputSection: React.FC<VisualOutputSectionProps> = ({
     : ARTWORKS_DATA.filter((art) => art.category === selectedCategory);
 
   return (
-    <section id="work" className="py-24 sm:py-32 bg-[#131313] relative z-20 border-b border-white/10">
-      <div className="max-w-[1440px] mx-auto px-6 md:px-16 relative">
+    <section id="work" className="py-16 sm:py-24 lg:py-32 bg-[#131313] relative z-20 border-b border-white/10">
+      <div className="max-w-[1440px] mx-auto px-4 sm:px-6 md:px-16 relative">
         {/* Section Title Header */}
-        <div className="flex flex-col md:flex-row justify-between items-start md:items-end mb-12 gap-6">
+        <div className="flex flex-col md:flex-row justify-between items-start md:items-end mb-8 sm:mb-12 gap-5 sm:gap-6">
           <div>
             <span className="font-mono text-xs uppercase tracking-widest text-neutral-400 block mb-3">
               05 // Archive Gallery
@@ -193,17 +206,17 @@ export const VisualOutputSection: React.FC<VisualOutputSectionProps> = ({
             </h2>
           </div>
 
-          <div className="flex flex-col items-start md:items-end gap-4">
+          <div className="w-full md:w-auto flex flex-col items-start md:items-end gap-3 sm:gap-4">
             <span className="font-mono text-xs text-neutral-400 uppercase tracking-widest">
               Showing {filteredArtworks.length} of {ARTWORKS_DATA.length} Projects
             </span>
             {/* Category Filter Pills */}
-            <div className="flex flex-wrap gap-2">
+            <div className="flex flex-wrap gap-2" aria-label="Filter artwork by category">
               {categories.map((cat) => (
                 <button
                   key={cat}
                   onClick={() => setSelectedCategory(cat)}
-                  className={`font-mono text-xs px-3.5 py-1.5 uppercase tracking-wider transition-all border ${
+                  className={`min-h-10 font-mono text-[10px] sm:text-xs px-3 py-2 uppercase tracking-wider transition-all border ${
                     selectedCategory === cat
                       ? 'bg-white text-[#131313] border-white font-semibold'
                       : 'bg-[#1A1A1A] text-neutral-400 border-white/10 hover:border-white/30 hover:text-white'
@@ -217,7 +230,7 @@ export const VisualOutputSection: React.FC<VisualOutputSectionProps> = ({
         </div>
 
         {/* Bento Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-12 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-12 gap-4 sm:gap-6">
           {filteredArtworks.map((art, idx) => {
             // Bento sizing rules
             let colSpan = 'md:col-span-4';
@@ -228,7 +241,7 @@ export const VisualOutputSection: React.FC<VisualOutputSectionProps> = ({
               aspect = 'aspect-[16/9]';
             } else if (idx === 1) {
               colSpan = 'md:col-span-4';
-              aspect = 'h-full min-h-[380px]';
+              aspect = 'h-full min-h-[280px] sm:min-h-[380px]';
             }
 
             return (

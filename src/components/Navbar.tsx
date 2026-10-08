@@ -118,8 +118,9 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenJoinModal, activeSection }
           {/* Mobile Menu Toggle */}
           <button
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            className="md:hidden text-white p-2 hover:bg-white/5 border border-white/10 transition-colors"
+            className="md:hidden min-h-11 min-w-11 flex items-center justify-center text-white p-2 hover:bg-white/5 border border-white/10 transition-colors"
             aria-label="Toggle Navigation"
+            aria-expanded={mobileMenuOpen}
           >
             {mobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
           </button>
@@ -127,8 +128,8 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenJoinModal, activeSection }
 
         {/* Mobile Drawer Menu */}
         {mobileMenuOpen && (
-          <div className="md:hidden fixed inset-x-0 top-[65px] bg-[#0A0A0A]/95 backdrop-blur-xl border-b border-white/10 p-6 flex flex-col gap-6 animate-fade-in-up z-50 pointer-events-auto">
-            <div className="flex flex-col gap-4">
+          <div className="md:hidden absolute inset-x-0 top-full max-h-[calc(100dvh-5rem)] overflow-y-auto overscroll-contain bg-[#0A0A0A]/95 backdrop-blur-xl border-b border-white/10 p-4 sm:p-6 flex flex-col gap-5 sm:gap-6 animate-fade-in-up z-50 pointer-events-auto">
+            <div className="flex flex-col gap-2 sm:gap-4">
               {navLinks.map((link) => (
                 <a
                   key={link.name}

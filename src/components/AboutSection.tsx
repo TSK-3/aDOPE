@@ -27,15 +27,15 @@ export const AboutSection: React.FC = () => {
   ];
 
   return (
-    <section id="about" className="py-24 sm:py-32 bg-[#131313] border-b border-white/10 relative z-20">
-      <div className="max-w-[1440px] mx-auto px-6 md:px-16 relative">
+    <section id="about" className="py-16 sm:py-24 lg:py-32 bg-[#131313] border-b border-white/10 relative z-20">
+      <div className="max-w-[1440px] mx-auto px-4 sm:px-6 md:px-16 relative">
         {/* Top Grid: Title + Description Box */}
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-start">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 sm:gap-12 items-start">
           <div className="lg:col-span-5">
             <span className="font-mono text-xs uppercase tracking-widest text-neutral-400 block mb-4">
               01 // Mission & Ethos
             </span>
-            <h2 className="text-3xl sm:text-5xl lg:text-6xl font-extrabold uppercase tracking-tight text-white leading-[1.05]">
+              <h2 className="text-3xl sm:text-5xl lg:text-6xl font-extrabold uppercase tracking-tight text-white leading-[1.05]">
               Artists,<br />
               Designers, &amp;<br />
               <span className="text-neutral-500">Original People of Earth.</span>
@@ -43,7 +43,7 @@ export const AboutSection: React.FC = () => {
           </div>
 
           <div className="lg:col-span-7">
-            <div className="bg-[#1A1A1A] border border-white/10 p-8 sm:p-12 relative group hover:bg-[#222222] transition-colors duration-500">
+              <div className="bg-[#1A1A1A] border border-white/10 p-5 sm:p-8 lg:p-12 relative group hover:bg-[#222222] transition-colors duration-500">
               <div className="absolute top-0 left-0 w-2.5 h-2.5 border-t border-l border-white/40 group-hover:border-white transition-colors" />
               <div className="absolute bottom-0 right-0 w-2.5 h-2.5 border-b border-r border-white/40 group-hover:border-white transition-colors" />
 
@@ -58,11 +58,11 @@ export const AboutSection: React.FC = () => {
         </div>
 
         {/* Pillars Grid */}
-        <div className="mt-20 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+        <div className="mt-12 sm:mt-20 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-6">
           {pillars.map((pillar, idx) => (
             <div
               key={idx}
-              className="bg-[#1A1A1A]/60 border border-white/10 p-6 relative group hover:border-white/30 transition-all hover:-translate-y-1"
+              className="bg-[#1A1A1A]/60 border border-white/10 p-5 sm:p-6 relative group hover:border-white/30 transition-all hover:-translate-y-1"
             >
               <div className="mb-4">{pillar.icon}</div>
               <h3 className="font-mono text-sm uppercase tracking-wider text-white mb-2 font-semibold">
@@ -76,7 +76,7 @@ export const AboutSection: React.FC = () => {
         </div>
 
         {/* Live Club Stats Bar */}
-        <div className="mt-16 pt-12 border-t border-white/10 grid grid-cols-2 sm:grid-cols-4 gap-8 text-center sm:text-left">
+        <div className="mt-12 sm:mt-16 pt-8 sm:pt-12 border-t border-white/10 grid grid-cols-2 sm:grid-cols-4 gap-5 sm:gap-8 text-center sm:text-left">
           {CLUB_STATS.map((stat, idx) => (
             <div key={idx} className="flex flex-col">
               <span className="font-mono text-xs uppercase tracking-widest text-neutral-500 mb-1">
