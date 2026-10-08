@@ -100,7 +100,8 @@ export const TIMELINE_DATA: TimelineLog[] = [
       'The club is based at Mahatma Gandhi Institute of Technology in Hyderabad, India.',
       'Public profiles describe aDOPE as a design and digital art club.'
     ],
-    date: 'MGIT'
+    date: 'MGIT',
+    imageUrl: LOGO_URL
   },
   {
     id: 'log-2',
@@ -113,7 +114,8 @@ export const TIMELINE_DATA: TimelineLog[] = [
       'The club brings together student designers around shared briefs and visual systems.',
       'Its work extends beyond a single medium: posters, identity, editorial, merchandise, and interfaces.'
     ],
-    date: 'FOUNDING STORY'
+    date: 'FOUNDING STORY',
+    imageUrl: '/nirvana-phoenix.png'
   },
   {
     id: 'log-3',
@@ -126,7 +128,8 @@ export const TIMELINE_DATA: TimelineLog[] = [
       'The archive reflects a practice rooted in visual communication and design craft.',
       'Public work is collected at behance.net/adopeclubmgit.'
     ],
-    date: 'PORTFOLIO'
+    date: 'PORTFOLIO',
+    imageUrl: 'https://mir-s3-cdn-cf.behance.net/projects/max_808_webp/bbaf7c167501801.Y3JvcCwxMzgwLDEwODAsMjcwLDA.png'
   }
 ];
 
