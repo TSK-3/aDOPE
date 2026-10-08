@@ -4,8 +4,12 @@ import { ThreeCanvas } from './ThreeCanvas';
 import { LOGO_URL } from '../data/mockData';
 
 const VIDEO_SRC = '/intro.mp4';
+const MOBILE_VIDEO_SRC = '/intro-mobile.mp4';
 
 export const Hero: React.FC = () => {
+  const [videoSrc, setVideoSrc] = useState(() => (
+    window.matchMedia('(pointer: coarse)').matches ? MOBILE_VIDEO_SRC : VIDEO_SRC
+  ));
   const [coords, setCoords] = useState({ x: '0.00', y: '100.00' });
   const [videoReady, setVideoReady] = useState(false);
   const [videoFailed, setVideoFailed] = useState(false);
@@ -20,6 +24,19 @@ export const Hero: React.FC = () => {
   const introTextRef = useRef<HTMLDivElement>(null);
   const heroContentRef = useRef<HTMLDivElement>(null);
   const progressRef = useRef(0);
+
+  useEffect(() => {
+    const pointerQuery = window.matchMedia('(pointer: coarse)');
+    const updateVideoSource = () => {
+      const nextSource = pointerQuery.matches ? MOBILE_VIDEO_SRC : VIDEO_SRC;
+      setVideoSrc(nextSource);
+      setVideoReady(false);
+      setVideoNeedsTap(false);
+    };
+
+    pointerQuery.addEventListener('change', updateVideoSource);
+    return () => pointerQuery.removeEventListener('change', updateVideoSource);
+  }, []);
 
   useEffect(() => {
     const handleMouseMove = (e: MouseEvent) => {
@@ -58,7 +75,7 @@ export const Hero: React.FC = () => {
     if (video.readyState >= HTMLMediaElement.HAVE_FUTURE_DATA) attemptPlayback();
 
     return () => video.removeEventListener('canplay', onCanPlay);
-  }, [videoFailed]);
+  }, [videoFailed, videoSrc]);
 
   /* Scroll-driven morph: fullscreen video -> docked into hero-card slot */
   const applyProgress = useCallback(() => {
@@ -164,7 +181,7 @@ export const Hero: React.FC = () => {
               <video
                 ref={videoRef}
                 className="w-full h-full object-contain md:object-cover"
-                src={VIDEO_SRC}
+                src={videoSrc}
                 autoPlay
                 muted
                 loop
