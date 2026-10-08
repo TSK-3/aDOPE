@@ -1,18 +1,25 @@
 import React, { useState } from 'react';
 import { ARTISTS_DATA } from '../data/mockData';
 import { Artist } from '../types';
-import { ExternalLink, Instagram, Linkedin, Github } from 'lucide-react';
+import { Instagram, Linkedin, Github } from 'lucide-react';
 
 export const ArtistsSection: React.FC = () => {
   const [selectedSpecialty, setSelectedSpecialty] = useState<string>('All');
   const [touchedArtistImage, setTouchedArtistImage] = useState<string | null>(null);
 
-  const specialties = ['All', 'Branding', 'Editorial', 'UI/UX', 'Events'];
+  const specialties = ['All', 'Nirvana', 'Editorial', 'UI/UX', 'Posters'];
+
+  const specialtyMatches: Record<string, string[]> = {
+    Nirvana: ['branding', 'events', 'campaigns'],
+    Editorial: ['editorial'],
+    'UI/UX': ['ui/ux'],
+    Posters: ['posters'],
+  };
 
   const filteredArtists = selectedSpecialty === 'All'
     ? ARTISTS_DATA
     : ARTISTS_DATA.filter((a) =>
-        a.specialty.some((s) => s.toLowerCase().includes(selectedSpecialty.toLowerCase()))
+        a.specialty.some((s) => specialtyMatches[selectedSpecialty]?.some((match) => s.toLowerCase().includes(match)))
       );
 
   return (

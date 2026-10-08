@@ -39,6 +39,7 @@ export interface TimelineLog {
   description: string;
   fullDetails: string[];
   date: string;
+  imageUrl: string;
 }
 
 export interface ApplicationFormState {

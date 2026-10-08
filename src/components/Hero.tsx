@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
-import { ArrowDown, X } from 'lucide-react';
+import { X } from 'lucide-react';
 import { ThreeCanvas } from './ThreeCanvas';
 import { LOGO_URL } from '../data/mockData';
 
@@ -253,15 +253,6 @@ export const Hero: React.FC = () => {
               MGIT's design and digital art club. Comprehending ideas and designing memories.
             </p>
 
-            <a
-              href="#about"
-              className="mt-6 text-white hover:text-neutral-400 transition-colors flex flex-col items-center group cursor-pointer"
-            >
-              <span className="font-mono text-[10px] uppercase tracking-widest mb-1.5 text-neutral-400 group-hover:text-white transition-colors">
-                Scroll
-              </span>
-              <ArrowDown className="w-3.5 h-3.5 animate-bounce text-white/80" />
-            </a>
           </div>
         </div>
       </div>
