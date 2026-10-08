@@ -187,7 +187,8 @@ export const CORE_TEAM_DATA: CoreTeamMember[] = [
     id: 'core-secretary',
     name: 'T Siddhartha Karthik',
     role: 'Secretary',
-    bio: 'The secretary role will be updated when the official team announcement is published.'
+    imageUrl: '/secretary-siddhartha.jpeg',
+    bio: 'Keeping aDOPE’s plans, records, and team communication organized so creative projects move forward smoothly.'
   },
   {
     id: 'core-president',
